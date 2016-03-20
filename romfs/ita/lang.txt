@@ -1,0 +1,29 @@
+MODIFICA
+IMPORTA
+CLONA
+SCEGLI
+ANNULLA
+Scegli la destinazione del clone
+Successo!
+Fallito!
+Inizializzazione della GPU fallita!
+Inizializzazione del File System fallita!
+Caricamento del salvataggio fallito!
+Backup del salvataggio fallito!
+Premi START per uscire.
+Inizializzazione degli extdata fallita!
+Scegli file:
+Nessun file in cartella!
+Specie:
+Seleziona specie:
+Cerca:
+Modalità Hack
+Livello:
+Nature:
+Abilità:
+Ball:
+Strumento:
+Shiny:
+Sì
+No
+Seleziona natura:
