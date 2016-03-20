@@ -170,15 +170,24 @@ bool Savefile::setPkmn(std::string path, char* source) {
 
 bool Savefile::writeSaveFile() {
     calculateChecksum();
-    return FileSystem::writeSaveFile(save);
+    if( FileSystem::writeSaveFile(save) != 0 )
+        return 0x421;
+    
+    return 0;
 }
 
 int Savefile::loadSaveFile() {
-    return FileSystem::readSaveFile(save);
+    if( FileSystem::readSaveFile(save) != 0 )
+        return 0x411;
+    
+    return 0;
 }
 
-bool Savefile::writeSaveFileBackup(std::string path) {
-    return FileSystem::backupSaveFile(path, save);
+int Savefile::writeSaveFileBackup(std::string path) {
+    if( FileSystem::backupSaveFile(path, save) != 0 )
+        return 0x422;
+    
+    return 0;
 }
 
 Savefile::~Savefile() {

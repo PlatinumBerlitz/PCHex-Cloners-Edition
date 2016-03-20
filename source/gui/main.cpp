@@ -8,6 +8,7 @@
 #include "compileoptions.h"
 
 int main() {
+    //ENVIROMENT INITIALIZATION
     int game = 0;
     int mediatype = 0;
     int res;
@@ -25,7 +26,6 @@ int main() {
 #ifdef __cia
     ciaConsole(game, mediatype);
 #endif
-
     Savefile save;
     res = save.loadSaveFile();
     if( res != 0 )
@@ -36,9 +36,17 @@ int main() {
     if( res != 0 )
         err = res;
 
+    //Savefile backup
+    const std::string BACKUPPATH = "/pk/PCHex++/backup/main";
+    res = ExtDataManager::getSave()->writeSaveFileBackup(BACKUPPATH);
+    if( res != 0 )
+        err = res;
+    
+    //Managing initialization error
     if( err != 0 )
         initializationError(err);
     
+    //MAIN LOOP
     while(State::getMode() != State::EXITMODE) {
         inputHandler();
         
@@ -46,6 +54,7 @@ int main() {
         Graphic::swapbuffer();
     }
     
+    //ENVIROMENT CLEANING
     FileSystem::closeFileSystem();
     Graphic::closeGraphicEnviroment();
     return 0;

@@ -36,7 +36,7 @@ class Savefile {
         bool setPkmn(std::string path, char* source);
         bool writeSaveFile();
         int loadSaveFile();
-        bool writeSaveFileBackup(std::string path);
+        int writeSaveFileBackup(std::string path);
         
         virtual ~Savefile();
 };
