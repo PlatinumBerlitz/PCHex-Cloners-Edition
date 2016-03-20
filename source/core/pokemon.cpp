@@ -265,11 +265,15 @@ void Pokemon::setDataPtr(char* dat) {
     setPkmn();
 }
 
-bool Pokemon::clone(const int boxdestination, const int indexdestination) {
+bool Pokemon::clone(const int boxdestination, const int indexdestination, const bool commit) {
     this->boxnumber = boxdestination;
     this->indexnumber = indexdestination;
     setPkmn();
-    return savePkmn();
+    
+    if( commit )
+        return savePkmn();
+    
+    else return 0;
 }
 
 bool Pokemon::importPK6(std::string path) {

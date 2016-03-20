@@ -20,6 +20,7 @@ void Box::draw() {
     int j = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN) * (NUMBERROW*NUMBERCOLUMN));
     int k = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN));
     
+    bool tick = State::getMultipleSelectionTick();
     for(int i = 0; i < NUMBERROW*NUMBERCOLUMN; i++) {
         const int XBOXSTART = posx;
         const int YBOXSTART = posy;
@@ -28,10 +29,19 @@ void Box::draw() {
         
         std::string texturepath;
         
-        if( State::getIndexNumber() == (i+(k*NUMBERROW*NUMBERCOLUMN)) )
-            texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+        if( State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE ) {
+            if(tick)
+                texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+            
+            else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+        }
         
-        else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+        else {
+            if( State::getIndexNumber() == (i+(k*NUMBERROW*NUMBERCOLUMN)) )
+                texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+
+            else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+        }
         
         int row = i / NUMBERCOLUMN;
         int column = i % NUMBERCOLUMN;

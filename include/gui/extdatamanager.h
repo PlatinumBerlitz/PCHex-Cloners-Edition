@@ -16,6 +16,16 @@ class ExtDataManager {
         static const unsigned int ENGLISH = 1;
         
         static const int LVSTRING = 0;
+        static const int BOXSTRING = 1;
+        static const int EDITSTRING = 2;
+        static const int IMPORTSTRING = 3;
+        static const int CLONESTRING = 4;
+        static const int CANCELSTRING = 5;
+        static const int CHOOSESTRING = 6;
+        static const int SELECTCLONINGSTRING = 7;
+        static const int SUCCESSSSTRING = 8;
+        static const int FAILEDSTRING = 9;
+        static const int MULTIPLESELECTSTRING = 10;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);

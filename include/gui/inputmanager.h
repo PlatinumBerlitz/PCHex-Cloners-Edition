@@ -17,6 +17,7 @@ class InputManager {
         static const int BUTTON_R = KEY_R;
         static const int BUTTON_L = KEY_L;
         static const int BUTTON_START = KEY_START;
+        static const int BUTTON_SELECT = KEY_SELECT;
         
         static void scanInput();
         static bool isPressed(const int button);

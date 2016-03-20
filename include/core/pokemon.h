@@ -97,7 +97,7 @@ class Pokemon {
         void setPokedexNumber(const u16 val);
         void setGender(const u8 val);
         void setDataPtr(char* data);
-        bool clone(const int boxdestination, const int indexdestination);
+        bool clone(const int boxdestination, const int indexdestination, const bool commit);
         bool importPK6(std::string path);
         bool exportPK6(std::string path);
         bool savePkmn();

@@ -4,6 +4,12 @@ int State::mode = State::SELECTMODE;
 int State::ciaselected = 0;
 int State::indexnumber = 0;
 int State::boxnumber = 0;
+int State::boxcloneorigin;
+int State::indexcloneorigin;
+std::string State::overlaymsg;
+int State::backupmode;
+int State::multipleselectiontick = 0;
+bool State::tick = false;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )
@@ -18,6 +24,22 @@ void State::setIndexNumber(const int val) {
 }
 
 void State::setBoxNumber(const int val) {
-    if( val >= 0 && val < 31 )
-        boxnumber = val;
+    if( val > 30 )
+        boxnumber = 0;
+    
+    else if( val < 0 )
+        boxnumber = 30;
+    
+    else boxnumber = val;
+}
+
+bool State::getMultipleSelectionTick() {
+    multipleselectiontick++;
+    
+    if( multipleselectiontick / 50 > 0 ) {
+        tick = !tick;
+        multipleselectiontick = 0;
+    }
+    
+    return tick;
 }

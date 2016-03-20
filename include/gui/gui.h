@@ -8,5 +8,10 @@ void ciaConsole(int& game, int& mediatype);
 void inputHandler();
 void drawTopScreen();
 
+void changeBox(const int val);
+void selectClone();
+void clone();
+void multipleSelectClone();
+void multipleClone();
 #endif /* GUI_H */
 
