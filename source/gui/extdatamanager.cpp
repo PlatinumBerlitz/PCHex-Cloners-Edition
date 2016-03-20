@@ -19,6 +19,7 @@ std::string ExtDataManager::getBasePath() {
 int ExtDataManager::initialize(Savefile* save) {
     saveptr = save;
     
+    FileSystem::createDirectory("/pk/PCHex++");
     FileSystem::createDirectory("/pk/PCHex++/import");
     FileSystem::createDirectory("/pk/PCHex++/export");
     FileSystem::createDirectory("/pk/PCHex++/backup");

@@ -9,7 +9,7 @@ RomFs:
 
 TitleInfo:
   Category                : Application
-  UniqueId                : 0x1926
+  UniqueId                : 0xFAFA9
 
 Option:
   UseOnSD                 : true # true if App is to be installed to SD
@@ -45,14 +45,14 @@ AccessControlInfo:
    - DirectSdmc
    #- Core
    #- CtrNandRo
-   #- CtrNandRw
+   - CtrNandRw
    #- CtrNandRoWrite
    #- CategorySystemSettings
    #- CardBoard
    #- ExportImportIvs
    #- DirectSdmcWrite
    #- SwitchCleanup
-   #- SaveDataMove
+   - SaveDataMove
    #- Shop
    #- Shell
    - CategoryHomeMenu
