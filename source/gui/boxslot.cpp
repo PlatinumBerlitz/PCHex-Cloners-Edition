@@ -6,6 +6,7 @@
 #include "texturemanager.h"
 #include "text.h"
 #include "utility.h"
+#include "state.h"
 
 BoxSlot::BoxSlot(raw_texture* tex, const int posx, const int posy, Pokemon pika) : Drawable(tex, posx, posy) {
     this->pika = pika;
@@ -27,15 +28,19 @@ void BoxSlot::draw() {
         elements.push_back(nicktext);
 
         //Draw pokemon sprite
+        std::string spritepath;
         const int SPRITEWIDTH = 40;
         const int SPRITEHEIGHT = 30;
         const std::string SPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites.png";
-
+        const std::string SHINYSPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites_shiny.png";
+        if( pika.isShiny() ) spritepath = SHINYSPRITEPATH;
+        else spritepath = SPRITEPATH;
+                
         int spritesheetx;
         int spritesheety;
         if( !pika.isEgg() ) {
-            spritesheetx = ((pika.getPokedexNumber() - 1) % 25) * SPRITEWIDTH;
-            spritesheety = ((pika.getPokedexNumber() - 1) / 25) * SPRITEHEIGHT;
+            spritesheetx = ((pika.getPokedexNumber()) % 25) * SPRITEWIDTH;
+            spritesheety = ((pika.getPokedexNumber()) / 25) * SPRITEHEIGHT;
         }
 
         else {
@@ -43,7 +48,7 @@ void BoxSlot::draw() {
             spritesheety = (721 / 25) * SPRITEHEIGHT;
         }
 
-        Drawable* pokemontex = new Drawable(TextureManager::getTexture(SPRITEPATH), posx, posy, spritesheetx, spritesheety, SPRITEWIDTH, SPRITEHEIGHT);
+        Drawable* pokemontex = new Drawable(TextureManager::getTexture(spritepath), posx, posy, spritesheetx, spritesheety, SPRITEWIDTH, SPRITEHEIGHT);
         elements.push_back(pokemontex);
 
         //Draw bag icon
@@ -71,6 +76,16 @@ void BoxSlot::draw() {
 
         Drawable* leveltext = new Text(FontManager::getFont(FONTPATH), XLEVELPOS, YLEVELPOS, 9, Text::BLACK, ExtDataManager::getGuiText(ExtDataManager::LVSTRING)+" "+intTOstring(pika.getLevel(), 10));
         elements.push_back(leveltext);
+    }
+    
+    //Draw clone tick
+    Drawable* tick;
+    if( (State::getMode() == State::CLONEMODE && State::getBoxCloneOrigin() == pika.getBoxNumber() && State::getIndexCloneOrigin() == pika.getIndexNumber()) || (State::getMode() == State::MULTIPLECLONEMODE && pika.getBoxNumber() == State::getBoxCloneOrigin()) ) {
+        const std::string TICKPATH = ExtDataManager::getBasePath() + "/textures/box_tick.png";
+        const int XTICKPOS = posx + 40;
+        const int YTICKPOS = posy + 7;
+        tick = new Drawable(TextureManager::getTexture(TICKPATH), XTICKPOS, YTICKPOS);
+        elements.push_back(tick);
     }
     
     for(unsigned int i = 0; i < elements.size(); i++)

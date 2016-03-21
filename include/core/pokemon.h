@@ -62,7 +62,7 @@ class Pokemon {
         Pokemon(const int boxnumber, const int indexnumber, Savefile* save);
         
         int getBoxNumber() { return boxnumber; }
-        int getIndexNumber() { return boxnumber; }
+        int getIndexNumber() { return indexnumber; }
         std::wstring getNickname();
         u16 getPokedexNumber();
         u8 getNature();
