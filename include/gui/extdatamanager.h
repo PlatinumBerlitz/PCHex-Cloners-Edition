@@ -28,6 +28,7 @@ class ExtDataManager {
         static const int FAILEDSTRING = 9;
         static const int MULTIPLESELECTSTRING = 10;
         static const int SELECTPK6STRING = 11;
+        static const int NOCONTENTSTRING = 12;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);

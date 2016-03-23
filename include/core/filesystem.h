@@ -37,8 +37,9 @@ class FileSystem {
         static int backupSaveFile(const std::string path, char* source);
         static int getGame() { return gamemode; }
         static int loadTextFile(const std::string path, std::vector<std::string>& destination);
-        std::vector<std::string> obtainFileList(std::string directory, std::string extension);
+        static std::vector<std::string> obtainFileList(std::string directory, std::string extension);
         static void closeFileSystem();
+        static bool isDirectory(const std::string path);
 };
 
 #endif /* FILESYSTEM_H */

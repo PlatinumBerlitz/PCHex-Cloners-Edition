@@ -14,5 +14,6 @@ void clone();
 void multipleSelectClone();
 void multipleClone();
 void selectImport();
+void import();
 #endif /* GUI_H */
 

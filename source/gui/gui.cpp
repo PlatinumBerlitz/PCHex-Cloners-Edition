@@ -189,6 +189,9 @@ void inputHandler() {
         
         else if( State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE)
             State::setMode(State::SELECTMODE);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE )
+            State::setMode(State::getBackupMode());
     }
     
     //A KEY
@@ -201,6 +204,9 @@ void inputHandler() {
         
         else if( State::getMode() == State::MULTIPLECLONEMODE )
             multipleClone();
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::IMPORTEOV )
+            import();
     }
     
     //Y KEY
@@ -403,8 +409,61 @@ void multipleClone() {
 }
 
 void selectImport() {
-    State::setEovMode(State::IMPORTEOV);
-    State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTPK6STRING));
-    State::setEovVector(ExtDataManager::getSpeciesNameVector());
-    State::setMode(State::EDITABLEOVERLAYMODE);
+    std::vector<std::string> result = FileSystem::obtainFileList("/pk/PCHex++/import", "pk6");
+    
+    if( result.empty() ) {
+        State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::NOCONTENTSTRING));
+        State::setBackupMode(State::SELECTMODE);
+        State::setMode(State::OVERLAYMODE);
+    }
+    
+    else {
+        State::setEovMode(State::IMPORTEOV);
+        State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTPK6STRING));
+        State::setEovVector(result);
+        State::setBackupMode(State::SELECTMODE);
+        State::setMode(State::EDITABLEOVERLAYMODE);
+    }
+}
+
+void import() {
+    std::string importpath;
+    
+    importpath = "/pk/PCHex++/import/" + State::getCurrentFolder() + "/" + State::getEovVector()[State::getEovSelected()];
+        
+    if( FileSystem::isDirectory(importpath) ) {
+        State::setCurrentFolder(State::getCurrentFolder()+"/"+State::getEovVector()[State::getEovSelected()]);
+        State::getEovVector().clear();
+            
+        std::vector<std::string> result = FileSystem::obtainFileList(importpath, "pk6");
+        
+        if( result.empty() ) {
+            State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::NOCONTENTSTRING));
+            State::setBackupMode(State::SELECTMODE);
+            State::setMode(State::OVERLAYMODE);
+            State::setEovSelected(0);
+            State::setCurrentFolder("");
+        }
+    
+        else {
+            State::setEovMode(State::IMPORTEOV);
+            State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTPK6STRING));
+            State::setEovVector(result);
+            State::setBackupMode(State::SELECTMODE);
+            State::setMode(State::EDITABLEOVERLAYMODE);
+            State::setEovSelected(0);
+        }
+    }
+    
+    else {
+        Pokemon toimport(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+
+        std::string overlaymsg;
+        if( toimport.importPK6(importpath) != 0 ) overlaymsg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+        else overlaymsg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+        State::setOverlayMsg(overlaymsg);
+        State::setMode(State::OVERLAYMODE);
+        State::setEovSelected(0);
+        State::setCurrentFolder("");
+    }
 }

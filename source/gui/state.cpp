@@ -13,6 +13,7 @@ bool State::tick = false;
 unsigned int State::eovselected = 0;
 std::vector<std::string> State::eovvector;
 int State::eovmode;
+std::string State::currentfolder;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )

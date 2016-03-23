@@ -277,11 +277,12 @@ bool Pokemon::clone(const int boxdestination, const int indexdestination, const 
 }
 
 bool Pokemon::importPK6(std::string path) {
-    if( !save->getPkmn(path, data) )
-        return false;
+    if( save->getPkmn(path, data) != 0 )
+        return 1;
     
     setPkmn();
-    return savePkmn();
+    savePkmn();
+    return 0;
 }
 
 bool Pokemon::exportPK6(std::string path) {

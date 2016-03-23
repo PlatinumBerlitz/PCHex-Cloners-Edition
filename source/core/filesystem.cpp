@@ -223,6 +223,19 @@ int FileSystem::loadTextFile(const std::string path, std::vector<std::string>& d
     return 0;
 }
 
+bool FileSystem::isDirectory(const std::string path) {
+    DIR* result = opendir(path.c_str());
+    bool toreturn;
+    
+    if( result == NULL ) toreturn = false;
+    else toreturn = true;
+    
+    closedir(result);
+    
+    return toreturn;
+    
+}
+
 std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::string extension) {
     std::vector<std::string> result;
     DIR* dir = opendir(directory.c_str());
@@ -235,11 +248,12 @@ std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::
         ent = readdir(dir);
         if(ent != NULL) {
             std::string toinsert(ent->d_name);
+            bool isdirectory = isDirectory(directory+"/"+toinsert);
             std::string::size_type dotPos = toinsert.rfind('.');
-            if(dotPos == std::string::npos) 
+            if(dotPos == std::string::npos && !isdirectory) 
                 toadd = false;
     
-            if(toadd && extension == toinsert.substr(dotPos+1) )
+            if(toadd && (extension == toinsert.substr(dotPos+1) || isdirectory)  )
                 result.push_back(toinsert);
         }
     }while(ent != NULL);

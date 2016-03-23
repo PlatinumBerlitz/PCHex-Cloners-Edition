@@ -19,6 +19,7 @@ class State {
         static unsigned int eovselected;
         static std::vector<std::string> eovvector;
         static int eovmode;
+        static std::string currentfolder;
         
     public:
         static const int EXITMODE = 0;
@@ -53,6 +54,8 @@ class State {
         static void setEovVector(const std::vector<std::string> val) { eovvector = val; }
         static int getEovMode() { return eovmode; }
         static void setEovMode(const int val) { eovmode = val; }
+        static std::string getCurrentFolder() { return currentfolder; }
+        static void setCurrentFolder(std::string val) { currentfolder = val; }
 };
 
 #endif /* STATE_H */
