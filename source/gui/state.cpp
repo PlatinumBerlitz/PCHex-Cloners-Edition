@@ -10,6 +10,9 @@ std::string State::overlaymsg;
 int State::backupmode;
 int State::multipleselectiontick = 0;
 bool State::tick = false;
+unsigned int State::eovselected = 0;
+std::vector<std::string> State::eovvector;
+int State::eovmode;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )
@@ -42,4 +45,9 @@ bool State::getMultipleSelectionTick() {
     }
     
     return tick;
+}
+
+void State::setEovSelected(const unsigned int val) {
+    if( val >= 0 && val < eovvector.size() )
+        eovselected = val;
 }

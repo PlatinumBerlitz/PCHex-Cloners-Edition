@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <string>
+#include <vector>
 
 class State {
     private:
@@ -15,6 +16,9 @@ class State {
         static int backupmode;
         static int multipleselectiontick;
         static bool tick;
+        static unsigned int eovselected;
+        static std::vector<std::string> eovvector;
+        static int eovmode;
         
     public:
         static const int EXITMODE = 0;
@@ -23,6 +27,9 @@ class State {
         static const int OVERLAYMODE = 3;
         static const int MULTIPLESELECTMODE = 4;
         static const int MULTIPLECLONEMODE = 5;
+        static const int EDITABLEOVERLAYMODE = 6;
+        
+        static const int IMPORTEOV = 0;
         
         static int getMode() { return mode; } 
         static void setMode(const int val) { mode = val; }
@@ -40,6 +47,12 @@ class State {
         static std::string getOverlayMsg() { return overlaymsg; }
         static void setOverlayMsg(const std::string val) { overlaymsg = val; } 
         static bool getMultipleSelectionTick();
+        static unsigned int getEovSelected() { return eovselected; }
+        static void setEovSelected(const unsigned int val );
+        static std::vector<std::string> getEovVector() { return eovvector; }
+        static void setEovVector(const std::vector<std::string> val) { eovvector = val; }
+        static int getEovMode() { return eovmode; }
+        static void setEovMode(const int val) { eovmode = val; }
 };
 
 #endif /* STATE_H */

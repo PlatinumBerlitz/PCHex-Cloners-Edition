@@ -7,6 +7,7 @@
 Savefile* ExtDataManager::saveptr = nullptr;
 std::vector<std::string> ExtDataManager::guitext;
 std::vector<u8> ExtDataManager::leveldata;
+std::vector<std::string> ExtDataManager::species;
 
 std::string ExtDataManager::getBasePath() {
 #ifdef __cia
@@ -18,7 +19,7 @@ std::string ExtDataManager::getBasePath() {
 
 int ExtDataManager::initialize(Savefile* save) {
     saveptr = save;
-    
+    FileSystem::createDirectory("/pk");
     FileSystem::createDirectory("/pk/PCHex++");
     FileSystem::createDirectory("/pk/PCHex++/import");
     FileSystem::createDirectory("/pk/PCHex++/export");
@@ -50,6 +51,9 @@ int ExtDataManager::initialize(Savefile* save) {
         memcpy(&toinsert, &buffer[(i*14)+11], 1);
         leveldata.push_back(toinsert);
     }
+    
+    if( FileSystem::loadTextFile(path+"/species", species) != 0 )
+        return 0x314;
     
     return 0;
 }

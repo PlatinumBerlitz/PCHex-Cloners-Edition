@@ -5,6 +5,7 @@
 #include <3ds/srv.h>
 #include <3ds/svc.h>
 #include <3ds/ipc.h>
+#include <vector>
 
 #include "filesystem.h"
 #include "compileoptions.h"
@@ -220,6 +221,31 @@ int FileSystem::loadTextFile(const std::string path, std::vector<std::string>& d
     
     file.close();
     return 0;
+}
+
+std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::string extension) {
+    std::vector<std::string> result;
+    DIR* dir = opendir(directory.c_str());
+    if(dir == NULL) 
+        return result;
+    
+    dirent* ent = NULL;
+    do {
+        bool toadd = true;
+        ent = readdir(dir);
+        if(ent != NULL) {
+            std::string toinsert(ent->d_name);
+            std::string::size_type dotPos = toinsert.rfind('.');
+            if(dotPos == std::string::npos) 
+                toadd = false;
+    
+            if(toadd && extension == toinsert.substr(dotPos+1) )
+                result.push_back(toinsert);
+        }
+    }while(ent != NULL);
+    
+    closedir(dir);
+    return result;
 }
 
 void FileSystem::closeFileSystem() {

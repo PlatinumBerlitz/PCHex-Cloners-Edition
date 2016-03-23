@@ -16,6 +16,7 @@
 #include "button.h"
 #include "pokemon.h"
 #include "overlay.h"
+#include "editableoverlay.h"
 
 void ciaConsole(int& game, int& mediatype) {
     bool exit = false;
@@ -101,13 +102,17 @@ void initializationError(const int err) {
         Graphic::startFrame(Graphic::TOPSCREEN);
         
         const std::string fontpath = ExtDataManager::getBasePath() + "/fonts/roboto_bold.ttf";
-        Text errtext(FontManager::getFont(fontpath), 15, 15, 9, Text::WHITE, "Initialization Error:");
+        
+        Text versiontext(FontManager::getFont(fontpath), 15, 15, 9, Text::WHITE, VERSIONNUMBER);
+        versiontext.draw();
+        
+        Text errtext(FontManager::getFont(fontpath), 15, 25, 9, Text::WHITE, "Initialization Error:");
         errtext.draw();
         
-        Text numerrtext(FontManager::getFont(fontpath), 90, 15, 9, Text::WHITE, intTOstring(err, 16));
+        Text numerrtext(FontManager::getFont(fontpath), 90, 25, 9, Text::WHITE, intTOstring(err, 16));
         numerrtext.draw();
         
-        Text starttext(FontManager::getFont(fontpath), 15, 25, 9, Text::WHITE, "Press START to exit.");
+        Text starttext(FontManager::getFont(fontpath), 15, 35, 9, Text::WHITE, "Press START to exit.");
         starttext.draw();
         
         Graphic::endFrame();
@@ -130,12 +135,18 @@ void inputHandler() {
     if( InputManager::isPressed(InputManager::BUTTON_DOWN) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE )
             State::setIndexNumber(State::getIndexNumber()+3);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE )
+            State::setEovSelected(State::getEovSelected()+1);
     }
     
     //UP KEY
     if( InputManager::isPressed(InputManager::BUTTON_UP) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE )
             State::setIndexNumber(State::getIndexNumber()-3);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE )
+            State::setEovSelected(State::getEovSelected()-1);
     }
     
     //RIGHT KEY
@@ -190,6 +201,12 @@ void inputHandler() {
         
         else if( State::getMode() == State::MULTIPLECLONEMODE )
             multipleClone();
+    }
+    
+    //Y KEY
+    if( InputManager::isPressed(InputManager::BUTTON_Y) ) {
+        if( State::getMode() == State::SELECTMODE )
+            selectImport();
     }
     
     //SELECT KEY
@@ -317,6 +334,14 @@ void drawTopScreen() {
         topelements.push_back(ov);
     }
     
+    //Draw editable overlay
+    EditableOverlay* eov;
+    if( State::getMode() == State::EDITABLEOVERLAYMODE ) {
+        const std::string EOVPATH = ExtDataManager::getBasePath() + "/textures/editableoverlay.png";
+        eov = new EditableOverlay(TextureManager::getTexture(EOVPATH), State::getEovSelected(), State::getOverlayMsg(), State::getEovVector());
+        topelements.push_back(eov);
+    }
+    
     //Draw version number
     const std::string VERSIONNUMBERSTRING = VERSIONNUMBER;
     const int XVERSIONNUMBERSTART = Graphic::TOPSCREENWIDTH - getTextWidth(FontManager::getFont(ROBOTOBOLDPATH), 9, VERSIONNUMBERSTRING) - 5;
@@ -375,4 +400,11 @@ void multipleClone() {
     
     State::setBackupMode(State::SELECTMODE);
     State::setMode(State::OVERLAYMODE);
+}
+
+void selectImport() {
+    State::setEovMode(State::IMPORTEOV);
+    State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTPK6STRING));
+    State::setEovVector(ExtDataManager::getSpeciesNameVector());
+    State::setMode(State::EDITABLEOVERLAYMODE);
 }

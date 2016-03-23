@@ -4,7 +4,7 @@
 #include "drawable.h"
 
 class Overlay : public Drawable {
-    private:
+    protected:
         std::string msg;
         
     public:
