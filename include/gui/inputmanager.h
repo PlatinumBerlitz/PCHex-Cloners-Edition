@@ -1,6 +1,8 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 
+#include <3ds.h>
+
 class InputManager {
     private:
       static u32 kdown;
@@ -21,6 +23,7 @@ class InputManager {
         
         static void scanInput();
         static bool isPressed(const int button);
+        static touchPosition scanTouch();
 };
 
 #endif /* INPUTMANAGER_H */

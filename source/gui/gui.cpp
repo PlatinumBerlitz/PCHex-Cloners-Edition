@@ -1,6 +1,7 @@
 #include <3ds.h>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include "gui.h"
 #include "extdatamanager.h"
@@ -17,6 +18,7 @@
 #include "pokemon.h"
 #include "overlay.h"
 #include "editableoverlay.h"
+#include "field.h"
 
 void ciaConsole(int& game, int& mediatype) {
     bool exit = false;
@@ -165,12 +167,18 @@ void inputHandler() {
     if( InputManager::isPressed(InputManager::BUTTON_L) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE )
             changeBox(State::getBoxNumber()-1);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE )
+            State::setSkip(State::getSkip()-1);
     }
     
     //R KEY
     if( InputManager::isPressed(InputManager::BUTTON_R) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE )
             changeBox(State::getBoxNumber()+1);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE )
+            State::setSkip(State::getSkip()+1);
     }
     
     //X KEY
@@ -191,7 +199,7 @@ void inputHandler() {
             State::setMode(State::SELECTMODE);
         
         else if( State::getMode() == State::EDITABLEOVERLAYMODE )
-            State::setMode(State::getBackupMode());
+            closeEov();
     }
     
     //A KEY
@@ -207,12 +215,25 @@ void inputHandler() {
         
         else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::IMPORTEOV )
             import();
+        
+        else if( State::getMode() == State::SELECTMODE )
+            State::setMode(State::EDITMODE);
+        
+        else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::NATUREEOV )
+            editNature();
+                
+        else if( State::getMode() == State::EDITMODE )
+            commitSave();
+        
     }
     
     //Y KEY
     if( InputManager::isPressed(InputManager::BUTTON_Y) ) {
         if( State::getMode() == State::SELECTMODE )
             selectImport();
+        
+        else if( State::getMode() == State::EDITMODE )
+            exprt();
     }
     
     //SELECT KEY
@@ -220,6 +241,15 @@ void inputHandler() {
         if( State::getMode() == State::SELECTMODE )
             State::setMode(State::MULTIPLESELECTMODE);
     }
+    
+    //Touch management
+    if( State::getTouchId() == State::NATUREBUTTON )
+        selectNature();
+    
+    //Keyboard management
+        if( (State::getKeyboardState() == 2) || (InputManager::isPressed(InputManager::BUTTON_L) && State::getMode() == State::EDITABLEOVERLAYMODE && State::keyboard.HBKB_CheckKeyboardInput().size() > 0) || (InputManager::isPressed(InputManager::BUTTON_R) && State::getMode() == State::EDITABLEOVERLAYMODE && State::keyboard.HBKB_CheckKeyboardInput().size() > 0) ) 
+            search();
+    
 }
 
 void drawTopScreen() {
@@ -261,26 +291,43 @@ void drawTopScreen() {
     const std::string LBUTTONPATH = ExtDataManager::getBasePath() + "/textures/lboxinfo.png";
     const int XLBUTTONSTART = 0;
     const int YLBUTTONSTART = 0;
-    Button* lbutton = new Button(TextureManager::getTexture(LBUTTONPATH), XLBUTTONSTART, YLBUTTONSTART, InputManager::BUTTON_L, ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(lnumber, 10));
-    topelements.push_back(lbutton);
+    std::string lmessage;
     
+    if( State::getMode() == State::EDITABLEOVERLAYMODE ) lmessage = ExtDataManager::getGuiText(ExtDataManager::PREVSTRING);
+    else lmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(lnumber, 10);
+    
+    Button* lbutton;
+    if( State::getMode() != State::EDITABLEOVERLAYMODE ) {
+        lbutton = new Button(TextureManager::getTexture(LBUTTONPATH), XLBUTTONSTART, YLBUTTONSTART, InputManager::BUTTON_L, lmessage);
+        topelements.push_back(lbutton);
+    }
+    
+    
+    //R
     int rnumber = State::getBoxNumber() + 2;
     if(rnumber == 32)
         rnumber = 1;
     
-    //R 
     const std::string RBUTTONPATH = ExtDataManager::getBasePath() + "/textures/rboxinfo.png";
     const int XRBUTTONSTART = Graphic::TOPSCREENWIDTH - TextureManager::getTexture(RBUTTONPATH)->width;
     const int YRBUTTONSTART = 0; 
-    Button* rbutton = new Button(TextureManager::getTexture(RBUTTONPATH), XRBUTTONSTART, YRBUTTONSTART, InputManager::BUTTON_R, ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(rnumber, 10));
-    topelements.push_back(rbutton);
+    std::string rmessage;
+    
+    if( State::getMode() == State::EDITABLEOVERLAYMODE ) rmessage = ExtDataManager::getGuiText(ExtDataManager::NEXTSTRING);
+    else rmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(rnumber, 10);
+    
+    Button* rbutton;
+    if( State::getMode() != State::EDITABLEOVERLAYMODE ) {
+        rbutton = new Button(TextureManager::getTexture(RBUTTONPATH), XRBUTTONSTART, YRBUTTONSTART, InputManager::BUTTON_R, rmessage);
+        topelements.push_back(rbutton);
+    }
     
     //Draw bottom button area
     const int BUTTONDISTANCE = 25;
     //Center
     const std::string CENTERBUTTONPATH = ExtDataManager::getBasePath() + "/textures/orangebutton.png";
     const int XCENTERBUTTONSTART = (Graphic::TOPSCREENWIDTH/2) - (TextureManager::getTexture(CENTERBUTTONPATH)->width/2);
-    if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE ) {
+    if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) {
         if( State::getMode() == State::SELECTMODE ) {
             const int YCENTERBUTTONSTART = Graphic::TOPSCREENHEIGHT - TextureManager::getTexture(CENTERBUTTONPATH)->height;
             Button* centerbutton = new Button(TextureManager::getTexture(CENTERBUTTONPATH), XCENTERBUTTONSTART, YCENTERBUTTONSTART, InputManager::BUTTON_A, ExtDataManager::getGuiText(ExtDataManager::EDITSTRING));
@@ -294,11 +341,11 @@ void drawTopScreen() {
 
         std::string leftmsg;
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::MULTIPLESELECTMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::IMPORTSTRING);
-        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING);
+        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING);
 
         int lefticon;
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::MULTIPLESELECTMODE ) lefticon = InputManager::BUTTON_Y;
-        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE ) lefticon = InputManager::BUTTON_B;
+        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) lefticon = InputManager::BUTTON_B;
 
         Button* leftbutton = new Button(TextureManager::getTexture(LEFTBUTTONPATH), XLEFTBUTTONSTART, YLEFTBUTTONSTART, lefticon, leftmsg);
         topelements.push_back(leftbutton);
@@ -310,11 +357,11 @@ void drawTopScreen() {
 
         std::string rightmsg;
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::MULTIPLESELECTMODE ) rightmsg = ExtDataManager::getGuiText(ExtDataManager::CLONESTRING);
-        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE ) rightmsg = ExtDataManager::getGuiText(ExtDataManager::CHOOSESTRING);
+        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) rightmsg = ExtDataManager::getGuiText(ExtDataManager::CHOOSESTRING);
 
         int righticon;
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::MULTIPLESELECTMODE) righticon = InputManager::BUTTON_X;
-        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE ) righticon = InputManager::BUTTON_A;
+        else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) righticon = InputManager::BUTTON_A;
 
         Button* rightbutton = new Button(TextureManager::getTexture(RIGHTBUTTONPATH), XRIGHTBUTTONSTART, YRIGHTBUTTONSTART, righticon, rightmsg);
         topelements.push_back(rightbutton);
@@ -324,10 +371,20 @@ void drawTopScreen() {
     std::string centerscreenmsg;
     if( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE ) centerscreenmsg = ExtDataManager::getGuiText(ExtDataManager::SELECTCLONINGSTRING);
     if( State::getMode() == State::MULTIPLESELECTMODE ) centerscreenmsg = ExtDataManager::getGuiText(ExtDataManager::MULTIPLESELECTSTRING);
+    
+    if( State::getMode() == State::EDITABLEOVERLAYMODE ) {
+        std::string kbreturned = State::keyboard.HBKB_CheckKeyboardInput();
+        
+        if( kbreturned.size() > 12) 
+            kbreturned = "..." + kbreturned.substr(kbreturned.size()-12, 12);
+        
+        centerscreenmsg = ExtDataManager::getGuiText(ExtDataManager::SEARCHSTRING) + " " + kbreturned; 
+    }
+    
     Text* centerscreentxt;
     const int XCENTERSCREENMSGSTART = (Graphic::TOPSCREENWIDTH/2) - (getTextWidth(FontManager::getFont(ROBOTOBOLDPATH), 9, centerscreenmsg)/2);
     const int YCENTERSCREENMSGSTART = Graphic::TOPSCREENHEIGHT - 15;
-    if( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE ){ 
+    if( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ){ 
         centerscreentxt = new Text(FontManager::getFont(ROBOTOBOLDPATH), XCENTERSCREENMSGSTART, YCENTERSCREENMSGSTART, 9, Text::BLACK, centerscreenmsg);
         topelements.push_back(centerscreentxt);
     }
@@ -364,6 +421,110 @@ void drawTopScreen() {
         delete topelements[i];
     
     Graphic::endFrame();
+}
+
+void drawBottomScreen() {
+    std::vector<Drawable*> bottomelements;
+    State::setTouchId(0);
+    
+    if( State::getMode() != State::EDITABLEOVERLAYMODE ) {
+        Graphic::startFrame(Graphic::BOTTOMSCREEN);
+        
+        bool active = false;
+        if( State::getMode() == State::EDITMODE ) active = true;
+        
+        Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+        
+        //Draw background
+        const std::string BACKGROUNDPATH = ExtDataManager::getBasePath() + "/textures/bottombackground.png";
+        Drawable* background = new Drawable(TextureManager::getTexture(BACKGROUNDPATH), 0, 0);
+        bottomelements.push_back(background);
+        
+        //Draw species info
+        const std::string SPECIESINFOPATH = ExtDataManager::getBasePath() + "/textures/speciesinfo.png";
+        const int XSPECIESINFOSTART = 0;
+        const int YSPECIESINFOSTART = 10;
+        const std::string specieswrite = ExtDataManager::getSpeciesName(pika.getPokedexNumber());
+        
+        Field* speciesfield = new Field(TextureManager::getTexture(SPECIESINFOPATH), XSPECIESINFOSTART, YSPECIESINFOSTART, active, State::SPECIESBUTTON, ExtDataManager::getGuiText(ExtDataManager::SPECIESSTRING), specieswrite, Field::POKEBALLMODE);
+        bottomelements.push_back(speciesfield);
+        
+        //Draw gender sign
+        if( !pika.isGenderless() ) {
+            const int XGENDERPOS = XSPECIESINFOSTART + 150;
+            const int YGENDERPOS = YSPECIESINFOSTART + 4;
+            const std::string MALEPATH = ExtDataManager::getBasePath() + "/textures/Male.png";
+            const std::string FEMALEPATH = ExtDataManager::getBasePath() + "/textures/Female.png";
+            
+            std::string genderpath;
+            if( pika.isFemale() ) genderpath = FEMALEPATH;
+            else genderpath = MALEPATH;
+            
+            Drawable* gendersign = new Drawable(TextureManager::getTexture(genderpath), XGENDERPOS, YGENDERPOS);
+            bottomelements.push_back(gendersign);
+        }
+        
+        //Draw fields
+        const std::string LIGHTTEXTURE = ExtDataManager::getBasePath() + "/textures/lightfield.png";
+        const std::string DARKTEXTURE = ExtDataManager::getBasePath() + "/textures/darkfield.png";
+        const int FIELDDISTANCE = TextureManager::getTexture(LIGHTTEXTURE)->height + 1;
+        const int POSY = 30;
+        
+        Field* naturefield = new Field(TextureManager::getTexture(DARKTEXTURE), 0, POSY + FIELDDISTANCE*2, active, State::NATUREBUTTON, ExtDataManager::getGuiText(ExtDataManager::NATURESTRING), ExtDataManager::getNatureName(pika.getNature()), Field::POKEBALLMODE);
+        bottomelements.push_back(naturefield);
+        
+        //Draw buttons
+        const std::string LIGHTPATH = ExtDataManager::getBasePath() + "/textures/lightbottombutton.png";
+        const std::string DARKPATH = ExtDataManager::getBasePath() + "/textures/darkbottombutton.png";
+        const int XPOS = 20;
+        const int YEXPORTPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*3);
+        const int YSAVEPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*2);
+        const int YCANCELPOS = Graphic::BOTTOMSCREENHEIGHT - TextureManager::getTexture(DARKPATH)->height;
+        Button* cancelbutton;
+        Button* savebutton;
+        Button* exportbutton;
+        
+        if( State::getMode() == State::EDITMODE ) {
+            cancelbutton = new Button(TextureManager::getTexture(DARKPATH), XPOS, YCANCELPOS, InputManager::BUTTON_B, ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING));
+            bottomelements.push_back(cancelbutton);
+            
+            savebutton = new Button(TextureManager::getTexture(LIGHTPATH), XPOS, YSAVEPOS, InputManager::BUTTON_A, ExtDataManager::getGuiText(ExtDataManager::SAVESTRING));
+            bottomelements.push_back(savebutton);
+            
+            exportbutton = new Button(TextureManager::getTexture(DARKPATH), XPOS, YEXPORTPOS, InputManager::BUTTON_Y, ExtDataManager::getGuiText(ExtDataManager::EXPORTSTRING));
+            bottomelements.push_back(exportbutton);
+        }
+        
+        for(unsigned int i = 0; i < bottomelements.size(); i++)
+            bottomelements[i]->draw();
+        
+        for( unsigned int i = 0; i < bottomelements.size(); i++ ) {
+            int returned = bottomelements[i]->isTouched(InputManager::scanTouch());
+            if( returned )
+                State::setTouchId(returned);
+        }
+                
+        for(unsigned int i = 0; i < bottomelements.size(); i++)
+            delete bottomelements[i];
+        
+        Graphic::endFrame();
+    }
+    
+    else
+        callKeyboard();
+}
+
+void callKeyboard() {
+    const int KEYBOARDDELAY = 20;
+    State::setKeyboardState(4);
+    
+    if(State::getMode() == State::EDITABLEOVERLAYMODE) 
+        State::setKeyboardDelay(State::getKeyboardDelay()+1);
+    
+    else State::setKeyboardDelay(0);
+        
+    if(State::getMode() == State::EDITABLEOVERLAYMODE && State::getKeyboardDelay() > KEYBOARDDELAY) 
+        State::setKeyboardState(State::keyboard.HBKB_CallKeyboard(InputManager::scanTouch()));
 }
 
 void changeBox(const int val) {
@@ -443,6 +604,8 @@ void import() {
             State::setMode(State::OVERLAYMODE);
             State::setEovSelected(0);
             State::setCurrentFolder("");
+            State::setSkip(0);
+            State::keyboard.HBKB_Clean();
         }
     
         else {
@@ -452,6 +615,7 @@ void import() {
             State::setBackupMode(State::SELECTMODE);
             State::setMode(State::EDITABLEOVERLAYMODE);
             State::setEovSelected(0);
+            State::setSkip(0);
         }
     }
     
@@ -465,5 +629,77 @@ void import() {
         State::setMode(State::OVERLAYMODE);
         State::setEovSelected(0);
         State::setCurrentFolder("");
+        State::setSkip(0);
+        State::getEovVector().clear();
+        State::keyboard.HBKB_Clean();
     }
+}
+
+void closeEov() {
+    State::setEovSelected(0);
+    State::setSkip(0);
+    State::getEovVector().clear();
+    State::keyboard.HBKB_Clean();
+    State::setMode(State::getBackupMode());
+}
+
+void search() {
+    std::string tosearch = State::keyboard.HBKB_CheckKeyboardInput();
+    std::transform(tosearch.begin(), tosearch.end(), tosearch.begin(), ::tolower);
+    
+    std::vector<std::string> bufferelement = State::getEovVector();
+    for(unsigned int i = 0; i < bufferelement.size(); i++)
+        std::transform(bufferelement[i].begin(), bufferelement[i].end(), bufferelement[i].begin(), ::tolower);
+    
+    unsigned int temp = 0;
+    unsigned int i = 0;
+    bool found;
+    int skipcount = -1;
+    do {
+        found = false;
+        for(i = temp; i < bufferelement.size() && !found; i++) 
+            if(tosearch == bufferelement[i].substr(0, tosearch.size())) 
+               found = true;
+        
+        skipcount++;
+        temp = i;
+    }while(skipcount < State::getSkip());
+        
+    if(found) State::setEovSelected(i-1);
+    else State::setSkip(State::getSkip()-1);
+}
+
+void selectNature() {
+    State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTNATURESTRING));
+    State::setEovMode(State::NATUREEOV);
+    State::setEovVector(ExtDataManager::getNaturesNameVector());
+    State::setBackupMode(State::EDITMODE);
+    State::setMode(State::EDITABLEOVERLAYMODE);
+}
+
+void editNature() {
+    Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    pika.setNature(State::getEovSelected());
+    closeEov();
+}
+
+void commitSave() {
+    std::string msg;
+    if( ExtDataManager::getSave()->writeSaveFile() != 0 ) msg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+    else msg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+    
+    State::setOverlayMsg(msg);
+    State::setBackupMode(State::EDITMODE);
+    State::setMode(State::OVERLAYMODE);
+}
+
+void exprt() {
+    std::string msg;
+    Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    if( pika.exportPK6("/pk/PCHex++/export/"+ExtDataManager::getSpeciesName(pika.getPokedexNumber())+"_"+intTOstring(pika.getPID(), 10)) != 0 ) msg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+    else msg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+    
+    State::setOverlayMsg(msg);
+    State::setBackupMode(State::EDITMODE);
+    State::setMode(State::OVERLAYMODE);
 }

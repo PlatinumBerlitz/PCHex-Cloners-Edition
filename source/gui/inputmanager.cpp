@@ -12,3 +12,10 @@ void InputManager::scanInput() {
 bool InputManager::isPressed(const int button) {
     return (kdown & button);
 }
+
+touchPosition InputManager::scanTouch() {
+    touchPosition touch;
+    hidTouchRead(&touch);
+    
+    return touch;
+}

@@ -14,6 +14,11 @@ unsigned int State::eovselected = 0;
 std::vector<std::string> State::eovvector;
 int State::eovmode;
 std::string State::currentfolder;
+HB_Keyboard State::keyboard;
+int State::keyboardstate;
+int State::skip = 0;
+int State::keyboarddelay = 0;
+int State::touchid = 0;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )

@@ -51,6 +51,7 @@ int main() {
         inputHandler();
         
         drawTopScreen();
+        drawBottomScreen();
         Graphic::swapbuffer();
     }
     

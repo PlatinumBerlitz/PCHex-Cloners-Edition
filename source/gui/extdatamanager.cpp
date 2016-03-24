@@ -8,6 +8,7 @@ Savefile* ExtDataManager::saveptr = nullptr;
 std::vector<std::string> ExtDataManager::guitext;
 std::vector<u8> ExtDataManager::leveldata;
 std::vector<std::string> ExtDataManager::species;
+std::vector<std::string> ExtDataManager::natures;
 
 std::string ExtDataManager::getBasePath() {
 #ifdef __cia
@@ -53,6 +54,9 @@ int ExtDataManager::initialize(Savefile* save) {
     }
     
     if( FileSystem::loadTextFile(path+"/species", species) != 0 )
+        return 0x314;
+    
+    if( FileSystem::loadTextFile(path+"/natures", natures) != 0 )
         return 0x314;
     
     return 0;

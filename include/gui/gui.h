@@ -7,7 +7,10 @@ void initializationError(const int err);
 void ciaConsole(int& game, int& mediatype);
 void inputHandler();
 void drawTopScreen();
+void drawBottomScreen();
 
+void closeEov();
+void callKeyboard();
 void changeBox(const int val);
 void selectClone();
 void clone();
@@ -15,5 +18,10 @@ void multipleSelectClone();
 void multipleClone();
 void selectImport();
 void import();
+void search();
+void selectNature();
+void editNature();
+void commitSave();
+void exprt();
 #endif /* GUI_H */
 

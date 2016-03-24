@@ -10,6 +10,7 @@ class ExtDataManager {
     private:
         static std::vector<std::string> guitext;
         static std::vector<std::string> species;
+        static std::vector<std::string> natures;
         static std::vector<u8> leveldata;
         static Savefile* saveptr;
         
@@ -29,6 +30,14 @@ class ExtDataManager {
         static const int MULTIPLESELECTSTRING = 10;
         static const int SELECTPK6STRING = 11;
         static const int NOCONTENTSTRING = 12;
+        static const int PREVSTRING = 13;
+        static const int NEXTSTRING = 14;
+        static const int SEARCHSTRING = 15;
+        static const int SPECIESSTRING = 16;
+        static const int NATURESTRING = 17;
+        static const int SELECTNATURESTRING = 18;
+        static const int SAVESTRING = 19;
+        static const int EXPORTSTRING = 20;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);
@@ -36,6 +45,8 @@ class ExtDataManager {
         static u8 getLevelType(const int val) { return leveldata[val]; }
         static std::string getSpeciesName(const int val) { return species[val]; }
         static std::vector<std::string> getSpeciesNameVector() { return species; }
+        static std::string getNatureName(const int val) { return natures[val]; }
+        static std::vector<std::string> getNaturesNameVector() { return natures; }
         static Savefile* getSave() { return saveptr; }
 };
 

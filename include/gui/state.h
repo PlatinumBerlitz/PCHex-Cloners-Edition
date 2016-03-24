@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <hbkb.h>
 
 class State {
     private:
@@ -20,6 +21,10 @@ class State {
         static std::vector<std::string> eovvector;
         static int eovmode;
         static std::string currentfolder;
+        static int keyboardstate;
+        static int skip;
+        static int keyboarddelay;
+        static int touchid; 
         
     public:
         static const int EXITMODE = 0;
@@ -29,8 +34,15 @@ class State {
         static const int MULTIPLESELECTMODE = 4;
         static const int MULTIPLECLONEMODE = 5;
         static const int EDITABLEOVERLAYMODE = 6;
+        static const int EDITMODE = 7;
         
         static const int IMPORTEOV = 0;
+        static const int NATUREEOV = 1;
+        
+        static const int SPECIESBUTTON = 1;
+        static const int NATUREBUTTON = 2;
+        
+        static HB_Keyboard keyboard;
         
         static int getMode() { return mode; } 
         static void setMode(const int val) { mode = val; }
@@ -56,6 +68,14 @@ class State {
         static void setEovMode(const int val) { eovmode = val; }
         static std::string getCurrentFolder() { return currentfolder; }
         static void setCurrentFolder(std::string val) { currentfolder = val; }
+        static int getKeyboardState() { return keyboardstate; }
+        static void setKeyboardState(const int val) { keyboardstate = val; }
+        static int getSkip() { return skip; }
+        static void setSkip(const int val) { if( val >= 0 ) skip = val; }
+        static int getKeyboardDelay() { return keyboarddelay; }
+        static void setKeyboardDelay(const int val) { keyboarddelay = val; }
+        static int getTouchId() { return touchid; }
+        static void setTouchId(const int val) { touchid = val; } 
 };
 
 #endif /* STATE_H */
