@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "state.h"
 
 int State::mode = State::SELECTMODE;
@@ -19,6 +21,10 @@ int State::keyboardstate;
 int State::skip = 0;
 int State::keyboarddelay = 0;
 int State::touchid = 0;
+int State::buttondelay = 0;
+int State::keepbuttondelay = 0;
+char State::tempbackup[232];
+int State::tab = 0;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )
@@ -56,4 +62,12 @@ bool State::getMultipleSelectionTick() {
 void State::setEovSelected(const unsigned int val) {
     if( val >= 0 && val < eovvector.size() )
         eovselected = val;
+}
+
+void State::getTempBackup(Pokemon* pika) {
+    pika->setDataPtr(tempbackup);
+}
+
+void State::setTempBackup(Pokemon* pika) {
+    memcpy(tempbackup, pika->getDataPtr(), 232);
 }

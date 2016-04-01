@@ -27,6 +27,8 @@ class Drawable {
         virtual int isTouched(const touchPosition& touch);
         
         virtual void draw();
+        
+        virtual ~Drawable() { }
 };
 
 #endif /* DRAWABLE_H */

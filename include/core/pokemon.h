@@ -37,6 +37,8 @@ class Pokemon {
         static const int EGGMOVELENGTH = 2;
         static const int EVPOS = 0x1E;
         static const int EVLENGTH = 1;
+        static const int OTNAMEPOS = 0xB0;
+        static const int OTNAMELENGTH = 0x17;
   
         char data[260];
         Savefile* save;
@@ -64,6 +66,7 @@ class Pokemon {
         int getBoxNumber() { return boxnumber; }
         int getIndexNumber() { return indexnumber; }
         std::wstring getNickname();
+        std::wstring getOT();
         u16 getPokedexNumber();
         u8 getNature();
         u8 getLevel();
@@ -72,6 +75,7 @@ class Pokemon {
         bool isShiny();
         bool isEVMAX();
         bool isGenderless();
+        bool isNicknamed();
         u8 getAbility();
         u16 getItem();
         u8 getBall();
@@ -82,6 +86,8 @@ class Pokemon {
         u16 getEggmove(const int nmove);
         u8 getIV(const int stat);
         u8 getEV(const int stat);
+        u8 getForm();
+        u16 getStat(const int stat);
         char* getDataPtr() { return data; }
         void setNickname(std::string nick);
         void setNature(const u8 nature);

@@ -5,6 +5,8 @@
 #include <vector>
 #include <hbkb.h>
 
+#include "Pokemon.h"
+
 class State {
     private:
         static int mode;
@@ -24,7 +26,11 @@ class State {
         static int keyboardstate;
         static int skip;
         static int keyboarddelay;
-        static int touchid; 
+        static int touchid;
+        static int buttondelay;
+        static int keepbuttondelay;
+        static char tempbackup[232];
+        static int tab;
         
     public:
         static const int EXITMODE = 0;
@@ -38,9 +44,65 @@ class State {
         
         static const int IMPORTEOV = 0;
         static const int NATUREEOV = 1;
+        static const int ABILITYEOV = 2;
+        static const int ITEMEOV = 3;
+        static const int BALLEOV = 4;
+        static const int SPECIESEOV = 5;
+        static const int MOVE1EOV = 12;
+        static const int MOVE2EOV = 13;
+        static const int MOVE3EOV = 14;
+        static const int MOVE4EOV = 15;
+        static const int EGGMOVE1EOV = 16;
+        static const int EGGMOVE2EOV = 17;
+        static const int EGGMOVE3EOV = 18;
+        static const int EGGMOVE4EOV = 19;
         
         static const int SPECIESBUTTON = 1;
         static const int NATUREBUTTON = 2;
+        static const int ABILITYBUTTON = 3;
+        static const int ITEMBUTTON = 4;
+        static const int BALLBUTTON = 5;
+        static const int SHINYBUTTON = 6;
+        static const int GENDERBUTTON = 7;
+        static const int LVBUTTONDOWN = 8;
+        static const int LVBUTTONUP = 9;
+        static const int OTBUTTON = 10;
+        static const int TABBUTTON = 11;
+        static const int MOVE1BUTTON = 12;
+        static const int MOVE2BUTTON = 13;
+        static const int MOVE3BUTTON = 14;
+        static const int MOVE4BUTTON = 15;
+        static const int EGGMOVE1BUTTON = 16;
+        static const int EGGMOVE2BUTTON = 17;
+        static const int EGGMOVE3BUTTON = 18;
+        static const int EGGMOVE4BUTTON = 19;
+        static const int HPIVBUTTONDOWN = 20;
+        static const int ATKIVBUTTONDOWN = 21;
+        static const int DEFIVBUTTONDOWN = 22;
+        static const int SPAIVBUTTONDOWN = 24;
+        static const int SPDIVBUTTONDOWN = 25;
+        static const int SPEIVBUTTONDOWN = 23;
+        static const int HPIVBUTTONUP = 26;
+        static const int ATKIVBUTTONUP = 27;
+        static const int DEFIVBUTTONUP = 28;
+        static const int SPAIVBUTTONUP = 30;
+        static const int SPDIVBUTTONUP = 31;
+        static const int SPEIVBUTTONUP = 29;
+        static const int HPEVBUTTONDOWN = 32;
+        static const int ATKEVBUTTONDOWN = 33;
+        static const int DEFEVBUTTONDOWN = 34;
+        static const int SPAEVBUTTONDOWN = 36;
+        static const int SPDEVBUTTONDOWN = 37;
+        static const int SPEEVBUTTONDOWN = 35;
+        static const int HPEVBUTTONUP = 38;
+        static const int ATKEVBUTTONUP = 39;
+        static const int DEFEVBUTTONUP = 40;
+        static const int SPAEVBUTTONUP = 42;
+        static const int SPDEVBUTTONUP = 43;
+        static const int SPEEVBUTTONUP = 41;
+        
+        static const int GENERALTAB = 0;
+        static const int COMBATTAB = 1;
         
         static HB_Keyboard keyboard;
         
@@ -76,6 +138,14 @@ class State {
         static void setKeyboardDelay(const int val) { keyboarddelay = val; }
         static int getTouchId() { return touchid; }
         static void setTouchId(const int val) { touchid = val; } 
+        static int getButtonDelay() { return buttondelay; }
+        static void setButtonDelay(const int val) { buttondelay = val; } 
+        static int getKeepButtonDelay() { return keepbuttondelay; }
+        static void setKeepButtonDelay(const int val) { keepbuttondelay = val; }
+        static void getTempBackup(Pokemon* pika);
+        static void setTempBackup(Pokemon* pika);
+        static int getTab() { return tab; }
+        static void setTab(const int val) { tab = val; }
 };
 
 #endif /* STATE_H */

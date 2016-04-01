@@ -44,8 +44,8 @@ void BoxSlot::draw() {
         }
 
         else {
-            spritesheetx = (721 % 25) * SPRITEWIDTH;
-            spritesheety = (721 / 25) * SPRITEHEIGHT;
+            spritesheetx = (722 % 25) * SPRITEWIDTH;
+            spritesheety = (722 / 25) * SPRITEHEIGHT;
         }
 
         Drawable* pokemontex = new Drawable(TextureManager::getTexture(spritepath), posx, posy, spritesheetx, spritesheety, SPRITEWIDTH, SPRITEHEIGHT);

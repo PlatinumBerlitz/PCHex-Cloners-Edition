@@ -40,6 +40,7 @@ class FileSystem {
         static std::vector<std::string> obtainFileList(std::string directory, std::string extension);
         static void closeFileSystem();
         static bool isDirectory(const std::string path);
+        static int romFsInit();
 };
 
 #endif /* FILESYSTEM_H */

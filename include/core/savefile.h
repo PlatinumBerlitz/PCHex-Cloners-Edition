@@ -37,6 +37,7 @@ class Savefile {
         bool writeSaveFile();
         int loadSaveFile();
         int writeSaveFileBackup(std::string path);
+        std::wstring getTrainerName();
         
         virtual ~Savefile();
 };

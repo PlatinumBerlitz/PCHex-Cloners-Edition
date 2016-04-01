@@ -1,4 +1,5 @@
 #include <cstring>
+#include <3ds.h>
 
 #include "savefile.h"
 #include "filesystem.h"
@@ -188,6 +189,19 @@ int Savefile::writeSaveFileBackup(std::string path) {
         return 0x422;
     
     return 0;
+}
+
+std::wstring Savefile::getTrainerName() {
+    const int TRAINERNAMEADDRESS = 0x1C548 - OFFSET;
+    const int TRAINERNAMELENGTH = 0x1C;
+    
+    u16 buffer[TRAINERNAMELENGTH/2];
+    memcpy(buffer, &save[TRAINERNAMEADDRESS], TRAINERNAMELENGTH);
+    uint32_t nkname[TRAINERNAMELENGTH/2];
+    int length = utf16_to_utf32(nkname, buffer, TRAINERNAMELENGTH/2);
+    nkname[length] = 0x0;
+    std::wstring nickname((wchar_t*)nkname);
+    return nickname;
 }
 
 Savefile::~Savefile() {

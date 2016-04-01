@@ -39,9 +39,6 @@ int FileSystem::initialize(const int game, const int mediatype) {
 
     savearchive = (FS_Archive){ARCHIVE_USER_SAVEDATA, (FS_Path){PATH_BINARY, 12, path_a}};
     
-    if( romfsInit() )
-        return 0x111;
-
     #else
     if( srvGetServiceHandleDirect(&fsHandle, "fs:USER") )
         return 0x111;
@@ -260,6 +257,13 @@ std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::
     
     closedir(dir);
     return result;
+}
+
+int FileSystem::romFsInit() {
+    if( romfsInit() != 0 )
+        return 0x111;
+    
+    return 0;
 }
 
 void FileSystem::closeFileSystem() {

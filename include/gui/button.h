@@ -6,7 +6,7 @@
 #include "drawable.h"
 
 class Button : public Drawable {
-    private:
+    protected:
         int button;
         std::string msg;
         

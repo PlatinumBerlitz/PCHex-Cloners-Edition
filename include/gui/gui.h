@@ -23,5 +23,21 @@ void selectNature();
 void editNature();
 void commitSave();
 void exprt();
+void selectAbility();
+void editAbility();
+void selectItem();
+void editItem();
+void selectBall();
+void editBall();
+void setShiny();
+void setGender();
+void selectSpecies();
+void editSpecies();
+void startEdit();
+void cancelEdit();
+void selectMove(const int val);
+void editMove();
+void editEggMove();
+
 #endif /* GUI_H */
 

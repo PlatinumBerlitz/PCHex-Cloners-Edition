@@ -16,16 +16,17 @@ int main() {
     
     //Graphic enviroment initialization
     Graphic::startGraphicEnviroment();
-    
+
+    //Savefile loading
+#ifdef __cia
+    FileSystem::romFsInit();
+    ciaConsole(game, mediatype);
+#endif
     //Filesystem initialization
     res = FileSystem::initialize(game, mediatype);
     if( res != 0 )
         err = res;
     
-    //Savefile loading
-#ifdef __cia
-    ciaConsole(game, mediatype);
-#endif
     Savefile save;
     res = save.loadSaveFile();
     if( res != 0 )

@@ -22,6 +22,16 @@ std::wstring Pokemon::getNickname() {
     return nickname;
 }
 
+std::wstring Pokemon::getOT() {
+    u16 buffer[OTNAMELENGTH/2];
+    memcpy(buffer, &data[OTNAMEPOS], OTNAMELENGTH);
+    uint32_t nkname[OTNAMELENGTH/2];
+    int length = utf16_to_utf32(nkname, buffer, OTNAMELENGTH/2);
+    nkname[length] = 0x0;
+    std::wstring nickname((wchar_t*)nkname);
+    return nickname;
+}
+
 u16 Pokemon::getPokedexNumber() {
     u16 pokedexnumber;
     memcpy(&pokedexnumber, &data[POKEDEXNUMBERPOS], POKEDEXNUMBERLENGTH);
@@ -166,6 +176,42 @@ bool Pokemon::isGenderless() {
     
 }
 
+u8 Pokemon::getForm() {
+    u8 bufferform;
+    memcpy(&bufferform, &data[GENDERPOS], GENDERLENGTH);
+    bufferform = (bufferform >> 3);
+    return bufferform;
+}
+
+u16 Pokemon::getStat(const int stat) {
+    u16 tempspecies = getPokedexNumber();
+    if( getForm() )
+        tempspecies = 721 + ExtDataManager::getFormData(tempspecies) + getForm() - 1;
+    
+    u8 mult = 10;
+    u16 final;
+    u8 basestat;
+    if(stat == Pokemon::HP) basestat = ExtDataManager::getBaseHP(tempspecies);
+    if(stat == Pokemon::ATK) basestat = ExtDataManager::getBaseATK(tempspecies);
+    if(stat == Pokemon::DEF) basestat = ExtDataManager::getBaseDEF(tempspecies);
+    if(stat == Pokemon::SPE) basestat = ExtDataManager::getBaseSPE(tempspecies);
+    if(stat == Pokemon::SPA) basestat = ExtDataManager::getBaseSPA(tempspecies);
+    if(stat == Pokemon::SPD) basestat = ExtDataManager::getBaseSPD(tempspecies);
+    
+    if(stat == Pokemon::HP)
+         final = 10 + ((2 * basestat) + getIV(stat) + getEV(stat) / 4 + 100) * getLevel() / 100;
+    else
+        final = 5 + (2 * basestat + getIV(stat) + getEV(stat) / 4) * getLevel() / 100; 
+    
+    if (getNature() / 5 + 1 == stat)
+        mult++;
+    if (getNature() % 5 + 1 == stat)
+        mult--;
+  
+    final = final * mult / 10;
+    return final;
+}
+
 void Pokemon::setNickname(std::string nick) {
     u8 toinsert[NICKNAMELENGTH];
     for(int i = 0; i < NICKNAMELENGTH; i++)
@@ -254,6 +300,12 @@ void Pokemon::setGender(const u8 val) {
     
     memcpy(&data[GENDERPOS], &buffergender, GENDERLENGTH);
     setPkmn();
+}
+bool Pokemon::isNicknamed() {
+    u32 buffer;
+    
+    memcpy(&buffer, &data[IVPOS], IVLENGTH);
+    return (buffer >> 31) & 1;
 }
 
 void Pokemon::setPkmn() {

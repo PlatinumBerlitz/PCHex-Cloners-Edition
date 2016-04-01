@@ -7,8 +7,19 @@
 Savefile* ExtDataManager::saveptr = nullptr;
 std::vector<std::string> ExtDataManager::guitext;
 std::vector<u8> ExtDataManager::leveldata;
+std::vector<u8> ExtDataManager::hpdata;
+std::vector<u8> ExtDataManager::atkdata;
+std::vector<u8> ExtDataManager::defdata;
+std::vector<u8> ExtDataManager::spedata;
+std::vector<u8> ExtDataManager::spadata;
+std::vector<u8> ExtDataManager::spddata;
+std::vector<u8> ExtDataManager::formdata;
 std::vector<std::string> ExtDataManager::species;
 std::vector<std::string> ExtDataManager::natures;
+std::vector<std::string> ExtDataManager::abilities;
+std::vector<std::string> ExtDataManager::items;
+std::vector<std::string> ExtDataManager::balls;
+std::vector<std::string> ExtDataManager::moves;
 
 std::string ExtDataManager::getBasePath() {
 #ifdef __cia
@@ -47,17 +58,79 @@ int ExtDataManager::initialize(Savefile* save) {
     if( FileSystem::readFile(path+"/personal", buffer) != 0 )
         return 0x313;
     
+    //retrieve level type
     for(int i = 0; i < 826; i++) {
         u8 toinsert;
         memcpy(&toinsert, &buffer[(i*14)+11], 1);
         leveldata.push_back(toinsert);
     }
     
+    //retrieve hp base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[i*14], 1);
+        hpdata.push_back(toinsert);
+    }
+    
+    //retrieve atk base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+1], 1);
+        atkdata.push_back(toinsert);
+    }
+    
+    //retrieve def base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+2], 1);
+        defdata.push_back(toinsert);
+    }
+    
+    //retrieve spe base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+3], 1);
+        spedata.push_back(toinsert);
+    }
+    
+    //retrieve spa base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+4], 1);
+        spadata.push_back(toinsert);
+    }
+    
+    //retrieve spd base
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+5], 1);
+        spddata.push_back(toinsert);
+    }
+    
+    //retrieve form data
+    for(int i = 0; i < 826; i++) {
+        u8 toinsert;
+        memcpy(&toinsert, &buffer[(i*14)+14], 1);
+        formdata.push_back(toinsert);
+    }
+    
     if( FileSystem::loadTextFile(path+"/species", species) != 0 )
         return 0x314;
     
     if( FileSystem::loadTextFile(path+"/natures", natures) != 0 )
-        return 0x314;
+        return 0x315;
+    
+    if( FileSystem::loadTextFile(path+"/abilities", abilities) != 0 )
+        return 0x316;
+    
+    if( FileSystem::loadTextFile(path+"/items", items) != 0 )
+        return 0x317;
+    
+    if( FileSystem::loadTextFile(path+"/balls", balls) != 0 )
+        return 0x318;
+    
+    if( FileSystem::loadTextFile(path+"/moves", moves) != 0 )
+        return 0x319;
     
     return 0;
 }
