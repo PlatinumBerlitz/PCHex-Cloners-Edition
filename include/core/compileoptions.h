@@ -2,8 +2,8 @@
 #define COMPILEOPTIONS_H
 
 //#define DEBUG
-#define __cia
-//#define __3dsx
+//#define __cia
+#define __3dsx
 
 #define VERSIONNUMBER "Ver: 0.1"
 
