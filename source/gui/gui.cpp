@@ -714,7 +714,7 @@ void drawBottomScreen() {
         //Draw buttons
         const std::string LIGHTPATH = ExtDataManager::getBasePath() + "/textures/lightbottombutton.png";
         const std::string DARKPATH = ExtDataManager::getBasePath() + "/textures/darkbottombutton.png";
-        const int XPOS = 20;
+        const int XPOS = 0;
         const int YEXPORTPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*3);
         const int YSAVEPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*2);
         const int YCANCELPOS = Graphic::BOTTOMSCREENHEIGHT - TextureManager::getTexture(DARKPATH)->height;

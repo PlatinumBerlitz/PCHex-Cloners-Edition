@@ -9,6 +9,10 @@ class FileSystem {
     private:
         static const int XYLENGTH = 0x65600;
         static const int ORASLENGTH = 0x76000;
+        static const u64 X_ID = 0x0004000000055D00;
+        static const u64 Y_ID = 0x0004000000055E00;
+        static const u64 OR_ID = 0x000400000011C400;
+        static const u64 AS_ID = 0x000400000011C500;
 
         static FS_Archive savearchive;
         static Handle fsHandle;

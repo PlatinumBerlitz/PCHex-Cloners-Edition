@@ -27,6 +27,9 @@ class ExtDataManager {
         
     public:
         static const unsigned int ENGLISH = 1;
+        static const unsigned int FRENCH = 2;
+        static const unsigned int ITALIAN = 4;
+        static const unsigned int SPANISH = 5;
         
         static const int LVSTRING = 0;
         static const int BOXSTRING = 1;
