@@ -15,7 +15,7 @@ bool State::tick = false;
 unsigned int State::eovselected = 0;
 std::vector<std::string> State::eovvector;
 int State::eovmode;
-std::string State::currentfolder;
+std::string State::currentfolder = "";
 HB_Keyboard State::keyboard;
 int State::keyboardstate;
 int State::skip = 0;

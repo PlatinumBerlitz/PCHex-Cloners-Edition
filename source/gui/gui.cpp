@@ -837,10 +837,10 @@ void selectImport() {
 void import() {
     std::string importpath;
     
-    importpath = "/pk/PCHex++/import/" + State::getCurrentFolder() + "/" + State::getEovVector()[State::getEovSelected()];
+    importpath = "/pk/PCHex++/import/" + State::getCurrentFolder() + State::getEovVector()[State::getEovSelected()];
         
     if( FileSystem::isDirectory(importpath) ) {
-        State::setCurrentFolder(State::getCurrentFolder()+"/"+State::getEovVector()[State::getEovSelected()]);
+        State::setCurrentFolder(State::getCurrentFolder()+State::getEovVector()[State::getEovSelected()]+"/");
         State::getEovVector().clear();
             
         std::vector<std::string> result = FileSystem::obtainFileList(importpath, "pk6");
