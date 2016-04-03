@@ -589,8 +589,8 @@ void drawBottomScreen() {
             bottomelements.push_back(shinyfield);
 
             //OT
-            Field* otfield = new Field(TextureManager::getTexture(LIGHTTEXTURE), 0, POSY + FIELDDISTANCE*7, false, State::OTBUTTON, L"OT:", pika.getOT(), Field::POKEBALLMODE);
-            bottomelements.push_back(otfield);
+            //Field* otfield = new Field(TextureManager::getTexture(LIGHTTEXTURE), 0, POSY + FIELDDISTANCE*7, false, State::OTBUTTON, L"OT:", pika.getOT(), Field::POKEBALLMODE);
+            //bottomelements.push_back(otfield);
         }
         
         if( State::getTab() == State::COMBATTAB && pika.getPokedexNumber() > 0 ) {
