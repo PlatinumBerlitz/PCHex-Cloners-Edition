@@ -25,6 +25,7 @@ int State::buttondelay = 0;
 int State::keepbuttondelay = 0;
 char State::tempbackup[232];
 int State::tab = 0;
+int State::tabkeyboarddelay = 0;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )

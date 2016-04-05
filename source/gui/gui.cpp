@@ -211,6 +211,8 @@ void inputHandler() {
     
     //A KEY
     if( InputManager::isPressed(InputManager::BUTTON_A) || State::getKeyboardState() == 1 ) {
+        State::setTKDelay(2);
+        
         if( State::getMode() == State::CLONEMODE )
             clone();
         
@@ -297,7 +299,7 @@ void inputHandler() {
     if( State::getTouchId() == State::LVBUTTONUP && (State::getButtonDelay() > BUTTONDELAY || State::getKeepButtonDelay() > KEEPBUTTONDELAY) && pika.getLevel() < 100 )
         pika.setLevel(pika.getLevel()+1);
     
-    if( State::getTouchId() == State::TABBUTTON && State::getButtonDelay() > BUTTONDELAY )
+    if( State::getTouchId() == State::TABBUTTON && State::getButtonDelay() > BUTTONDELAY && State::getTKDelay() == 0 )
         State::setTab(!State::getTab());
     
     if( State::getTouchId() >= State::MOVE1BUTTON && State::getTouchId() <= State::EGGMOVE4BUTTON )
@@ -333,6 +335,9 @@ void inputHandler() {
         State::setKeyboardDelay(State::getKeyboardDelay()+1);
     
     else State::setKeyboardDelay(0);
+    
+    if( State::getTKDelay() > 0 )
+        State::setTKDelay(State::getTKDelay()-1);
     
 }
 
@@ -885,6 +890,7 @@ void import() {
 void closeEov() {
     State::setEovSelected(0);
     State::setSkip(0);
+    State::setCurrentFolder("");
     State::getEovVector().clear();
     State::keyboard.HBKB_Clean();
     State::setMode(State::getBackupMode());

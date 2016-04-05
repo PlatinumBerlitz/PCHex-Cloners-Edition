@@ -31,6 +31,7 @@ class State {
         static int keepbuttondelay;
         static char tempbackup[232];
         static int tab;
+        static int tabkeyboarddelay;
         
     public:
         static const int EXITMODE = 0;
@@ -146,6 +147,8 @@ class State {
         static void setTempBackup(Pokemon* pika);
         static int getTab() { return tab; }
         static void setTab(const int val) { tab = val; }
+        static int getTKDelay() { return tabkeyboarddelay; }
+        static void setTKDelay(const int val) { tabkeyboarddelay = val; }
 };
 
 #endif /* STATE_H */
