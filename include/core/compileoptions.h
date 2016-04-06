@@ -5,7 +5,7 @@
 //#define __cia
 #define __3dsx
 
-#define VERSIONNUMBER "Ver: 0.1.2"
+#define VERSIONNUMBER "Ver: 0.2"
 
 #endif /* COMPILEOPTIONS_H */
 

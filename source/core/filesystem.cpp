@@ -253,16 +253,15 @@ std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::
     
     dirent* ent = NULL;
     do {
-        bool toadd = true;
+        //bool toadd = true;
         ent = readdir(dir);
         if(ent != NULL) {
             std::string toinsert(ent->d_name);
-            bool isdirectory = isDirectory(directory+"/"+toinsert);
             std::string::size_type dotPos = toinsert.rfind('.');
-            if(dotPos == std::string::npos && !isdirectory) 
-                toadd = false;
+            /*if(dotPos == std::string::npos && !isdirectory) 
+                toadd = false;*/
     
-            if(toadd && (extension == toinsert.substr(dotPos+1) || isdirectory)  )
+            if( extension == toinsert.substr(dotPos+1) || dotPos == std::string::npos )
                 result.push_back(toinsert);
         }
     }while(ent != NULL);
