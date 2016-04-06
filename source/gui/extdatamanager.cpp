@@ -3,6 +3,8 @@
 #include "extdatamanager.h"
 #include "filesystem.h"
 #include "compileoptions.h"
+#include "inputmanager.h"
+#include "state.h"
 
 Savefile* ExtDataManager::saveptr = nullptr;
 std::vector<std::string> ExtDataManager::guitext;
@@ -140,6 +142,10 @@ int ExtDataManager::initialize(Savefile* save) {
     
     if( FileSystem::loadTextFile(path+"/moves", moves) != 0 )
         return 0x319;
+    
+    InputManager::scanInput();
+    if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
+        State::setShoulderless(true);
     
     return 0;
 }

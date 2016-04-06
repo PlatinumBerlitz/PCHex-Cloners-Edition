@@ -130,7 +130,7 @@ void initializationError(const int err) {
 void inputHandler() {
     InputManager::scanInput();
     Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
-    
+    const int BUTTONDELAY = 2;
     
     //START KEY
     if( InputManager::isPressed(InputManager::BUTTON_START) ) {
@@ -168,7 +168,7 @@ void inputHandler() {
     }
     
     //L KEY
-    if( InputManager::isPressed(InputManager::BUTTON_L) ) {
+    if( InputManager::isPressed(InputManager::BUTTON_L) || (State::getTouchId() == State::LSHOULDERLESSBUTTON && State::getButtonDelay() > BUTTONDELAY) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE )
             changeBox(State::getBoxNumber()-1);
         
@@ -177,7 +177,7 @@ void inputHandler() {
     }
     
     //R KEY
-    if( InputManager::isPressed(InputManager::BUTTON_R) ) {
+    if( InputManager::isPressed(InputManager::BUTTON_R) || (State::getTouchId() == State::RSHOULDERLESSBUTTON && State::getButtonDelay() > BUTTONDELAY) ) {
         if( State::getMode() == State::SELECTMODE || State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE )
             changeBox(State::getBoxNumber()+1);
         
@@ -269,7 +269,6 @@ void inputHandler() {
     }
     
     //Touch management
-    const int BUTTONDELAY = 2;
     const int KEEPBUTTONDELAY = 20;
     
     if( State::getTouchId() == State::NATUREBUTTON )
@@ -533,6 +532,22 @@ void drawBottomScreen() {
         const std::string BACKGROUNDPATH = ExtDataManager::getBasePath() + "/textures/bottombackground.png";
         Drawable* background = new Drawable(TextureManager::getTexture(BACKGROUNDPATH), 0, 0);
         bottomelements.push_back(background);
+        
+        //Draw shoulderless mode
+        if( State::getShoulderless() ) {
+            const std::string DOWNARROWPATH = ExtDataManager::getBasePath() + "/textures/downarrow.png";
+            const std::string UPARROWPATH = ExtDataManager::getBasePath() + "/textures/uparrow.png";
+            const int XARROWDOWNSTART = 135;
+            const int YARROWDOWNSTART = 220;
+            const int XARROWUPSTART = XARROWDOWNSTART + 20;
+            const int YARROWUPSTART = YARROWDOWNSTART;
+            
+            Drawable* downarrow = new Drawable(TextureManager::getTexture(DOWNARROWPATH), XARROWDOWNSTART, YARROWDOWNSTART, true, State::LSHOULDERLESSBUTTON);
+            bottomelements.push_back(downarrow);
+            
+            Drawable* uparrow = new Drawable(TextureManager::getTexture(UPARROWPATH), XARROWUPSTART, YARROWUPSTART, true, State::RSHOULDERLESSBUTTON);
+            bottomelements.push_back(uparrow);
+        }
         
         if( State::getTab() == State::GENERALTAB && pika.getPokedexNumber() > 0 ) {
             //Draw species info

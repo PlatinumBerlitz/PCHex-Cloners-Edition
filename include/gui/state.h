@@ -32,6 +32,7 @@ class State {
         static char tempbackup[232];
         static int tab;
         static int tabkeyboarddelay;
+        static bool shoulderless;
         
     public:
         static const int EXITMODE = 0;
@@ -101,6 +102,8 @@ class State {
         static const int SPAEVBUTTONUP = 42;
         static const int SPDEVBUTTONUP = 43;
         static const int SPEEVBUTTONUP = 41;
+        static const int LSHOULDERLESSBUTTON = 42;
+        static const int RSHOULDERLESSBUTTON = 43;
         
         static const int GENERALTAB = 0;
         static const int COMBATTAB = 1;
@@ -149,6 +152,8 @@ class State {
         static void setTab(const int val) { tab = val; }
         static int getTKDelay() { return tabkeyboarddelay; }
         static void setTKDelay(const int val) { tabkeyboarddelay = val; }
+        static bool getShoulderless() { return shoulderless; }
+        static void setShoulderless(const bool val) { shoulderless = val; }
 };
 
 #endif /* STATE_H */
