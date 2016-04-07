@@ -787,6 +787,19 @@ void drawBottomScreen() {
         callKeyboard();
 }
 
+void loadingScreen() {
+    const std::string fontpath = ExtDataManager::getBasePath() + "/fonts/roboto_bold.ttf"; 
+    const int XPOS = (Graphic::BOTTOMSCREENWIDTH/2) - (getTextWidth(FontManager::getFont(fontpath), 9, ExtDataManager::getGuiText(ExtDataManager::LOADINGSTRING))/2);
+    const int YPOS = (Graphic::BOTTOMSCREENHEIGHT/2);
+    
+    Graphic::startFrame(Graphic::BOTTOMSCREEN);
+    Text loading(FontManager::getFont(fontpath), XPOS, YPOS, 9, Text::WHITE, ExtDataManager::getGuiText(ExtDataManager::LOADINGSTRING));
+    loading.draw();
+    Graphic::endFrame();
+    
+    Graphic::swapbuffer();
+}
+
 void callKeyboard() {
     const int KEYBOARDDELAY = 40;
     

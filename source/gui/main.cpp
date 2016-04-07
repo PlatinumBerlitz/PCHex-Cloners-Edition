@@ -22,6 +22,10 @@ int main() {
     FileSystem::romFsInit();
     ciaConsole(game, mediatype);
 #endif
+    
+    //Loading screen
+    loadingScreen();
+    
     //Filesystem initialization
     res = FileSystem::initialize(game, mediatype);
     if( res != 0 )

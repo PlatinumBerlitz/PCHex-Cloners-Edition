@@ -30,6 +30,7 @@ class ExtDataManager {
         static const unsigned int FRENCH = 2;
         static const unsigned int ITALIAN = 4;
         static const unsigned int SPANISH = 5;
+        static const unsigned int NEDERLAND = 8;
         
         static const int LVSTRING = 0;
         static const int BOXSTRING = 1;
@@ -79,6 +80,7 @@ class ExtDataManager {
         static const int IVSTRING = 45;
         static const int EVSTRING = 46;
         static const int TOTALSTRING = 47;
+        static const int LOADINGSTRING = 48;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);

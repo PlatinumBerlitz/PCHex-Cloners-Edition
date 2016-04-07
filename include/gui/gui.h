@@ -9,6 +9,7 @@ void inputHandler();
 void drawTopScreen();
 void drawBottomScreen();
 
+void loadingScreen();
 void closeEov();
 void callKeyboard();
 void changeBox(const int val);

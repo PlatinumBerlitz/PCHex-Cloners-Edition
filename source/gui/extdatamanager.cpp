@@ -57,8 +57,11 @@ int ExtDataManager::initialize(Savefile* save) {
     
     else if( language == SPANISH )
         langpath = "/es";
+   
+    else if( language == NEDERLAND )
+        langpath = "/nl";
     
-    else langpath = "/en";
+    else langpath = "/nl";
     
     std::string path = getBasePath() + langpath;
     
