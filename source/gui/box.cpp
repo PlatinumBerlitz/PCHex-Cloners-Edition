@@ -13,45 +13,76 @@ Box::Box(const int posx, const int posy) : Drawable(nullptr, posx, posy) {
 
 void Box::draw() {
     std::vector<Drawable*> elements;
-    //Draw algorithm
-    const int NUMBERROW = 5;
-    const int NUMBERCOLUMN = 3;
-    
-    int j = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN) * (NUMBERROW*NUMBERCOLUMN));
-    int k = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN));
-    
-    bool tick = State::getMultipleSelectionTick();
-    for(int i = 0; i < NUMBERROW*NUMBERCOLUMN; i++) {
-        const int XBOXSTART = posx;
-        const int YBOXSTART = posy;
-        const int YBOXDISTANCE = 5;
-        const int XBOXDISTANCE = 5;
-        
-        std::string texturepath;
-        
-        if( State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE ) {
-            if(tick)
-                texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
-            
-            else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
-        }
-        
-        else {
-            if( State::getIndexNumber() == (i+(k*NUMBERROW*NUMBERCOLUMN)) )
-                texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+    if( State::getBoxNumber() != 31 ) {
+        //Draw algorithm
+        const int NUMBERROW = 5;
+        const int NUMBERCOLUMN = 3;
 
-            else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+        int j = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN) * (NUMBERROW*NUMBERCOLUMN));
+        int k = (State::getIndexNumber()/(NUMBERROW*NUMBERCOLUMN));
+
+        bool tick = State::getMultipleSelectionTick();
+        for(int i = 0; i < NUMBERROW*NUMBERCOLUMN; i++) {
+            const int XBOXSTART = posx;
+            const int YBOXSTART = posy;
+            const int YBOXDISTANCE = 5;
+            const int XBOXDISTANCE = 5;
+
+            std::string texturepath;
+
+            if( State::getMode() == State::MULTIPLESELECTMODE || State::getMode() == State::MULTIPLECLONEMODE ) {
+                if(tick)
+                    texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+
+                else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+            }
+
+            else {
+                if( State::getIndexNumber() == (i+(k*NUMBERROW*NUMBERCOLUMN)) )
+                    texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+
+                else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+            }
+
+            int row = i / NUMBERCOLUMN;
+            int column = i % NUMBERCOLUMN;
+            const int XPOS = XBOXSTART + (XBOXDISTANCE*column) + (TextureManager::getTexture(texturepath)->width*column);
+            const int YPOS = YBOXSTART + (YBOXDISTANCE*row) + (TextureManager::getTexture(texturepath)->height*row);
+
+            Pokemon pika(State::getBoxNumber(), j, ExtDataManager::getSave());
+            Drawable* box = new BoxSlot(TextureManager::getTexture(texturepath), XPOS, YPOS, pika);
+            elements.push_back(box);
+            j++;
         }
+    }
+    
+    else {
+        const int NUMBERROW = 2;
+        const int NUMBERCOLUMN = 3;
         
-        int row = i / NUMBERCOLUMN;
-        int column = i % NUMBERCOLUMN;
-        const int XPOS = XBOXSTART + (XBOXDISTANCE*column) + (TextureManager::getTexture(texturepath)->width*column);
-        const int YPOS = YBOXSTART + (YBOXDISTANCE*row) + (TextureManager::getTexture(texturepath)->height*row);
-        
-        Pokemon pika(State::getBoxNumber(), j, ExtDataManager::getSave());
-        Drawable* box = new BoxSlot(TextureManager::getTexture(texturepath), XPOS, YPOS, pika);
-        elements.push_back(box);
-        j++;
+        for( int i = 0; i < NUMBERROW; i++ ) {
+            for(int j = 0; j < NUMBERCOLUMN; j++) {
+                const int XBOXSTART = posx;
+                const int YBOXSTART = posy;
+                const int YBOXDISTANCE = 5;
+                const int XBOXDISTANCE = 5;
+
+                std::string texturepath;
+                if( State::getIndexNumber() == (i*NUMBERCOLUMN)+j )
+                    texturepath = ExtDataManager::getBasePath() + "/textures/boxslot_selected.png";
+
+                else texturepath = ExtDataManager::getBasePath() + "/textures/boxslot.png";
+                
+                int row = i;
+                int column = j;
+                const int XPOS = XBOXSTART + (XBOXDISTANCE*column) + (TextureManager::getTexture(texturepath)->width*column);
+                const int YPOS = YBOXSTART + (YBOXDISTANCE*row) + (TextureManager::getTexture(texturepath)->height*row);
+
+                Pokemon pika(State::getBoxNumber(), (i*NUMBERCOLUMN)+j, ExtDataManager::getSave());
+                Drawable* box = new BoxSlot(TextureManager::getTexture(texturepath), XPOS, YPOS, pika);
+                elements.push_back(box);
+            }
+        }
     }
     
     for(unsigned int i = 0; i < elements.size(); i++)

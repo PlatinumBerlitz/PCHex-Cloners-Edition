@@ -265,7 +265,7 @@ void inputHandler() {
     //SELECT KEY
     if( InputManager::isPressed(InputManager::BUTTON_SELECT) ) {
         if( State::getMode() == State::SELECTMODE )
-            State::setMode(State::MULTIPLESELECTMODE);
+            enableMultiple();
     }
     
     //Touch management
@@ -347,8 +347,14 @@ void drawTopScreen() {
     Graphic::startFrame(Graphic::TOPSCREEN);
     
     //Draw background
+    std::string backgroundpath;
     const std::string BACKGROUNDPATH = ExtDataManager::getBasePath() + "/textures/background.png";
-    Drawable* backgroundtexture = new Drawable(TextureManager::getTexture(BACKGROUNDPATH), 0, 0);
+    const std::string BBACKGROUNDPATH = ExtDataManager::getBasePath() + "/textures/background_borderless.png";
+    
+    if( State::getBoxNumber() != 31) backgroundpath = BACKGROUNDPATH;
+    else backgroundpath = BBACKGROUNDPATH;
+    
+    Drawable* backgroundtexture = new Drawable(TextureManager::getTexture(backgroundpath), 0, 0);
     topelements.push_back(backgroundtexture);
     
     //Draw box
@@ -364,17 +370,24 @@ void drawTopScreen() {
     Drawable* boxinfo = new Drawable(TextureManager::getTexture(BOXINFOPATH), XBOXINFOSTART, YBOXINFOSTART);
     topelements.push_back(boxinfo);
     
-    const std::string BOXNUMBERSTRING = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(State::getBoxNumber()+1, 10);
-    const int XBOXINFOTEXTSTART = XBOXINFOSTART + (TextureManager::getTexture(BOXINFOPATH)->width/2) - (getTextWidth(FontManager::getFont(ROBOTOBOLDPATH), 9, BOXNUMBERSTRING)/2);
+    std::string boxnumberstring;
+    if( State::getBoxNumber() < 31 )
+        boxnumberstring = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(State::getBoxNumber()+1, 10);
+    
+    else boxnumberstring = ExtDataManager::getGuiText(ExtDataManager::TEAMSTRING);
+    
+    const int XBOXINFOTEXTSTART = XBOXINFOSTART + (TextureManager::getTexture(BOXINFOPATH)->width/2) - (getTextWidth(FontManager::getFont(ROBOTOBOLDPATH), 9, boxnumberstring)/2);
     const int YBOXINFOTEXTSTART = YBOXINFOSTART + 7;
-    Text* boxnumber = new Text(FontManager::getFont(ROBOTOBOLDPATH), XBOXINFOTEXTSTART, YBOXINFOTEXTSTART, 9, Text::WHITE, BOXNUMBERSTRING);
+    Text* boxnumber = new Text(FontManager::getFont(ROBOTOBOLDPATH), XBOXINFOTEXTSTART, YBOXINFOTEXTSTART, 9, Text::WHITE, boxnumberstring);
     topelements.push_back(boxnumber);
     
     //Draw shoulder button
     //L
     int lnumber = State::getBoxNumber();
-    if( lnumber == 0)
+    if( lnumber == 0 && (State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::MULTIPLESELECTMODE) )
         lnumber = 31;
+    
+    else if(lnumber == 0) lnumber = 32;
     
     const std::string LBUTTONPATH = ExtDataManager::getBasePath() + "/textures/lboxinfo.png";
     const int XLBUTTONSTART = 0;
@@ -382,8 +395,12 @@ void drawTopScreen() {
     std::string lmessage;
     
     if( State::getMode() == State::EDITABLEOVERLAYMODE ) lmessage = ExtDataManager::getGuiText(ExtDataManager::PREVSTRING);
-    else lmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(lnumber, 10);
-    
+    else {
+        if( lnumber != 32 )
+            lmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(lnumber, 10);
+        
+        else lmessage = ExtDataManager::getGuiText(ExtDataManager::TEAMSTRING);
+    }
     Button* lbutton;
     if( State::getMode() != State::EDITMODE ) {
         lbutton = new Button(TextureManager::getTexture(LBUTTONPATH), XLBUTTONSTART, YLBUTTONSTART, InputManager::BUTTON_L, lmessage);
@@ -393,7 +410,7 @@ void drawTopScreen() {
     
     //R
     int rnumber = State::getBoxNumber() + 2;
-    if(rnumber == 32)
+    if( (rnumber == 32 && (State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::MULTIPLESELECTMODE)) || rnumber > 32 )
         rnumber = 1;
     
     const std::string RBUTTONPATH = ExtDataManager::getBasePath() + "/textures/rboxinfo.png";
@@ -402,7 +419,12 @@ void drawTopScreen() {
     std::string rmessage;
     
     if( State::getMode() == State::EDITABLEOVERLAYMODE ) rmessage = ExtDataManager::getGuiText(ExtDataManager::NEXTSTRING);
-    else rmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(rnumber, 10);
+    else {
+        if( rnumber != 32 )
+            rmessage = ExtDataManager::getGuiText(ExtDataManager::BOXSTRING) + " " + intTOstring(rnumber, 10);
+        
+        else rmessage = ExtDataManager::getGuiText(ExtDataManager::TEAMSTRING);
+    }
     
     Button* rbutton;
     if( State::getMode() != State::EDITMODE ) {
@@ -1088,4 +1110,11 @@ void editEggMove() {
     int val = State::getEovMode() - State::EGGMOVE1BUTTON;
     pika.setEggmove(State::getEovSelected(), val);
     closeEov();
+}
+
+void enableMultiple() {
+    if( State::getBoxNumber() == 31 )
+        State::setBoxNumber(0);
+    
+    State::setMode(State::MULTIPLESELECTMODE);
 }

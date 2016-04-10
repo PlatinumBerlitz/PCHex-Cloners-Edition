@@ -23,6 +23,7 @@ class Savefile {
         
     public:
         static const int PKMNLENGTH = 232;
+        static const int PARTYPKMNLENGTH = 260;
         static const int BOXMAX = 31;
         static const int INDEXMAX = 30;
         static const int POKEMONNUMBER = 721;

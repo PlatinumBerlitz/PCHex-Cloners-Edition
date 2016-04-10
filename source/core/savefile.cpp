@@ -112,12 +112,25 @@ void Savefile::decryptPkmn(char* pkmn) {
 
 int Savefile::getPkmnAddress(const int boxnumber, const int indexnumber) {
     int boxpos;
-    if(FileSystem::getGame() == FileSystem::XY) boxpos = 0x27A00 - OFFSET;
-    if(FileSystem::getGame() == FileSystem::ORAS) boxpos = 0x38400 - OFFSET;
+    if(FileSystem::getGame() == FileSystem::XY) {
+        if( boxnumber < 31 )
+            boxpos = 0x27A00 - OFFSET;
+        
+        else boxpos = 0x19600 - OFFSET;
+    }
     
+    if(FileSystem::getGame() == FileSystem::ORAS) {
+        if( boxnumber < 31 )
+            boxpos = 0x38400 - OFFSET;
+        
+        else boxpos = 0x19600 - OFFSET;
+    }
     const int PKMNNUM = 30;
     
-    return boxpos + (PKMNLENGTH * PKMNNUM * boxnumber) + (indexnumber * PKMNLENGTH);
+    if( boxnumber < 31)
+        return boxpos + (PKMNLENGTH * PKMNNUM * boxnumber) + (indexnumber * PKMNLENGTH);
+    
+    return boxpos + (PARTYPKMNLENGTH*indexnumber);
 }
 
 void Savefile::calculatePKMNChecksum(char* data) {

@@ -36,16 +36,27 @@ void State::setCiaSelected(const int val) {
 }
 
 void State::setIndexNumber(const int val) {
-    if( val >= 0 && val < 30 )
+    if( boxnumber == 31 ) {
+        if(val >= 0 && val < 6)
+            indexnumber = val;
+    }
+    
+    else if( val >= 0 && val < 30 )
         indexnumber = val;
 }
 
 void State::setBoxNumber(const int val) {
-    if( val > 30 )
+    int limitval;
+    if( mode != State::MULTIPLESELECTMODE && mode != State::MULTIPLECLONEMODE )
+        limitval = 31;
+    
+    else limitval = 30;
+    
+    if( val > limitval )
         boxnumber = 0;
     
     else if( val < 0 )
-        boxnumber = 30;
+        boxnumber = limitval;
     
     else boxnumber = val;
 }

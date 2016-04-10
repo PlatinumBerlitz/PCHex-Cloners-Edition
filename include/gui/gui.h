@@ -39,6 +39,7 @@ void cancelEdit();
 void selectMove(const int val);
 void editMove();
 void editEggMove();
+void enableMultiple();
 
 #endif /* GUI_H */
 
