@@ -73,7 +73,7 @@ int ExtDataManager::initialize(Savefile* save) {
         return 0x312;
     
     char buffer[0x32c8];
-    if( FileSystem::readFile(path+"/personal", buffer) != 0 )
+    if( FileSystem::readFile(getBasePath()+"/personal", buffer) != 0 )
         return 0x313;
     
     //retrieve level type
