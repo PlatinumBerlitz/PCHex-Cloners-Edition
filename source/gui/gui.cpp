@@ -986,9 +986,10 @@ void exprt() {
 }
 
 void selectAbility() {
+    Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
     State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTABILITYSTRING));
     State::setEovMode(State::ABILITYEOV);
-    State::setEovVector(ExtDataManager::getAbilitiesNameVector());
+    State::setEovVector(pika.getAbilitySet());
     State::setBackupMode(State::EDITMODE);
     State::setMode(State::EDITABLEOVERLAYMODE);
 }

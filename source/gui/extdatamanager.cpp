@@ -22,6 +22,7 @@ std::vector<std::string> ExtDataManager::abilities;
 std::vector<std::string> ExtDataManager::items;
 std::vector<std::string> ExtDataManager::balls;
 std::vector<std::string> ExtDataManager::moves;
+std::vector<ExtDataManager::abilityset> ExtDataManager::abilitydata;
 
 std::string ExtDataManager::getBasePath() {
 #ifdef __cia
@@ -131,6 +132,19 @@ int ExtDataManager::initialize(Savefile* save) {
         formdata.push_back(toinsert);
     }
     
+    //retrieve ability data
+    for(int i = 0; i < 826; i++) {
+        abilityset setinsert;
+        for(int j = 0; j < 3; j++) {
+            u8 toinsert;
+            memcpy(&toinsert, &buffer[(i*14)+(6+j)], 1);
+            setinsert.push_back(toinsert);
+        }
+        
+        abilitydata.push_back(setinsert);
+    }
+    
+        
     if( FileSystem::loadTextFile(path+"/species", species) != 0 )
         return 0x314;
     

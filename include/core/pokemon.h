@@ -1,6 +1,8 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
+#include <vector>
+
 #include "savefile.h"
 
 class Pokemon {
@@ -21,6 +23,8 @@ class Pokemon {
         static const int GENDERLENGTH = 1;
         static const int ABILITYPOS = 0x14;
         static const int ABILITYLENGTH = 1;
+        static const int ABILITYNUMPOS = 0x15;
+        static const int ABILITYNUMLENGTH = 1;
         static const int ITEMPOS = 0x0A;
         static const int ITEMLENGTH = 2;
         static const int POKEBALLPOS = 0xDC;
@@ -77,6 +81,7 @@ class Pokemon {
         bool isGenderless();
         bool isNicknamed();
         u8 getAbility();
+        std::vector<std::string> getAbilitySet();
         u16 getItem();
         u8 getBall();
         u16 getOTID();
@@ -92,6 +97,7 @@ class Pokemon {
         void setNickname(std::string nick);
         void setNature(const u8 nature);
         void setAbility(const u8 ability);
+        void setAbilityNum(const u8 abilitynum);
         void setItem(const u16 item);
         void setBall(const u8 ball);
         void setShiny(const bool shiny);

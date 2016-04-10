@@ -80,6 +80,20 @@ u8 Pokemon::getAbility() {
     return abilitybuffer;
 }
 
+std::vector<std::string> Pokemon::getAbilitySet() {
+    std::vector<std::string> result;
+    u16 tempspecies = getPokedexNumber();
+    /*if( getForm() )
+        tempspecies = 721 + ExtDataManager::getFormData(tempspecies) + getForm() - 1;*/
+    
+    std::vector<u8> resultset = ExtDataManager::getAbilitySet(tempspecies);
+    for(int i = 0; i < 3; i++) {
+        result.push_back(ExtDataManager::getAbilityName(resultset[i]));
+    }
+    
+    return result;
+}
+
 u16 Pokemon::getItem() {
     u16 itembuffer;
     memcpy(&itembuffer, &data[ITEMPOS], ITEMLENGTH);
@@ -230,8 +244,18 @@ void Pokemon::setNature(const u8 nature) {
 }
 
 void Pokemon::setAbility(const u8 ability) {
-    memcpy(&data[ABILITYPOS], &ability, ABILITYLENGTH);
+    setAbilityNum(ability+1);
+    
+    std::vector<u8> resultset = ExtDataManager::getAbilitySet(getPokedexNumber());
+    u8 toset = resultset[ability];
+    
+    memcpy(&data[ABILITYPOS], &toset, ABILITYLENGTH);
     setPkmn();
+}
+
+void Pokemon::setAbilityNum(const u8 abilitynum) {
+    memcpy(&data[ABILITYNUMPOS], &abilitynum, ABILITYNUMLENGTH);
+    //setPkmn();
 }
 
 void Pokemon::setItem(const u16 item) {

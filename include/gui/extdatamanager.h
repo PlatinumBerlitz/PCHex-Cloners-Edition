@@ -8,6 +8,8 @@
 
 class ExtDataManager {
     private:
+        typedef std::vector<u8> abilityset;
+        
         static std::vector<std::string> guitext;
         static std::vector<std::string> species;
         static std::vector<std::string> natures;
@@ -23,6 +25,7 @@ class ExtDataManager {
         static std::vector<u8> spadata;
         static std::vector<u8> spddata;
         static std::vector<u8> formdata;
+        static std::vector<abilityset> abilitydata;
         static Savefile* saveptr;
         
     public:
@@ -106,6 +109,7 @@ class ExtDataManager {
         static std::vector<std::string> getBallsNameVector() { return balls; }
         static std::string getMoveName(const int val) { return moves[val]; }
         static std::vector<std::string> getMovesNameVector() { return moves; }
+        static abilityset getAbilitySet(const int val) { return abilitydata[val]; }
         static Savefile* getSave() { return saveptr; }
 };
 
