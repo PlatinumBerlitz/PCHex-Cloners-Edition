@@ -24,7 +24,7 @@ int main() {
 #endif
     
     //Loading screen
-    loadingScreen();
+    //loadingScreen();
     
     //Filesystem initialization
     res = FileSystem::initialize(game, mediatype);
