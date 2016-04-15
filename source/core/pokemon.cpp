@@ -197,6 +197,10 @@ u8 Pokemon::getForm() {
     return bufferform;
 }
 
+u8 Pokemon::getHPType() {
+    return 15 * ((getIV(HP)& 1) + 2 * (getIV(ATK) & 1) + 4 * (getIV(DEF) & 1) + 8 * (getIV(SPE) & 1) + 16 * (getIV(SPA) & 1) + 32 * (getIV(SPD) & 1)) / 63;
+}    
+
 u16 Pokemon::getStat(const int stat) {
     u16 tempspecies = getPokedexNumber();
     if( getForm() )

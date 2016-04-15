@@ -22,6 +22,7 @@ std::vector<std::string> ExtDataManager::abilities;
 std::vector<std::string> ExtDataManager::items;
 std::vector<std::string> ExtDataManager::balls;
 std::vector<std::string> ExtDataManager::moves;
+std::vector<std::string> ExtDataManager::types;
 std::vector<ExtDataManager::abilityset> ExtDataManager::abilitydata;
 
 std::string ExtDataManager::getBasePath() {
@@ -162,6 +163,9 @@ int ExtDataManager::initialize(Savefile* save) {
     
     if( FileSystem::loadTextFile(path+"/moves", moves) != 0 )
         return 0x319;
+    
+    if( FileSystem::loadTextFile(path+"/types", types) != 0 )
+        return 0x320;
     
     InputManager::scanInput();
     if( InputManager::isPressed(InputManager::BUTTON_SELECT) )

@@ -17,6 +17,7 @@ class ExtDataManager {
         static std::vector<std::string> items;
         static std::vector<std::string> balls;
         static std::vector<std::string> moves;
+        static std::vector<std::string> types;
         static std::vector<u8> leveldata;
         static std::vector<u8> hpdata;
         static std::vector<u8> atkdata;
@@ -86,6 +87,7 @@ class ExtDataManager {
         static const int TOTALSTRING = 47;
         static const int LOADINGSTRING = 48;
         static const int TEAMSTRING = 49;
+        static const int HIDDENPOWERSTRING = 50;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);
@@ -110,6 +112,8 @@ class ExtDataManager {
         static std::vector<std::string> getBallsNameVector() { return balls; }
         static std::string getMoveName(const int val) { return moves[val]; }
         static std::vector<std::string> getMovesNameVector() { return moves; }
+        static std::string getTypeName(const int val) { return types[val]; }
+        static std::vector<std::string> getTypesNameVector() { return types; }
         static abilityset getAbilitySet(const int val) { return abilitydata[val]; }
         static Savefile* getSave() { return saveptr; }
 };

@@ -751,6 +751,11 @@ void drawBottomScreen() {
             //Stats spe
             MultiField* spefield = new MultiField(TextureManager::getTexture(STATSDARKPATH), XSTATSAREAPOS, YSTATSAREAPOS  + STATSAREADISTANCE*7, active, State::SPEIVBUTTONDOWN, State::SPEEVBUTTONDOWN, ExtDataManager::getGuiText(ExtDataManager::SPESTRING), intTOstring(pika.getIV(Pokemon::SPE), 10), intTOstring(pika.getEV(Pokemon::SPE), 10), intTOstring(pika.getStat(Pokemon::SPE), 10));
             bottomelements.push_back(spefield);
+            
+            //Hidden Power
+            //const std::string LIGHTFIELDTEXTURE = ExtDataManager::getBasePath() + "/textures/lightfield.png";
+            Field* hiddenpowerfield = new Field(TextureManager::getTexture(STATSLIGHTPATH), XSTATSAREAPOS, YSTATSAREAPOS + STATSAREADISTANCE*8, active, State::HIDDENPOWERBUTTON, ExtDataManager::getGuiText(ExtDataManager::HIDDENPOWERSTRING), ExtDataManager::getTypeName(pika.getHPType()), Field::POKEBALLMODE);
+            bottomelements.push_back(hiddenpowerfield);
         }
         
         //Draw buttons
@@ -1074,6 +1079,9 @@ void editSpecies() {
     Pokemon pika2(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
     if( !pika2.isNicknamed() )
         pika2.setNickname(ExtDataManager::getSpeciesName(State::getEovSelected()));
+    
+    Pokemon pika3(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    pika3.setAbility(0);
     
     closeEov();
 }

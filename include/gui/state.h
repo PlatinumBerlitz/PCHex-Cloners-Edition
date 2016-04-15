@@ -104,6 +104,7 @@ class State {
         static const int SPEEVBUTTONUP = 41;
         static const int LSHOULDERLESSBUTTON = 42;
         static const int RSHOULDERLESSBUTTON = 43;
+        static const int HIDDENPOWERBUTTON = 44;
         
         static const int GENERALTAB = 0;
         static const int COMBATTAB = 1;

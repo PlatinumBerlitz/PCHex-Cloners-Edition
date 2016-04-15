@@ -111,6 +111,7 @@ class Pokemon {
         u8 getIV(const int stat);
         u8 getEV(const int stat);
         u8 getForm();
+        u8 getHPType();
         u16 getStat(const int stat);
         char* getDataPtr() { return data; }
         void setNickname(std::string nick);
