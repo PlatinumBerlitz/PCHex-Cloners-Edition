@@ -111,7 +111,7 @@ void Savefile::decryptPkmn(char* pkmn) {
 }
 
 int Savefile::getPkmnAddress(const int boxnumber, const int indexnumber) {
-    int boxpos;
+    int boxpos = 0;
     if(FileSystem::getGame() == FileSystem::XY) {
         if( boxnumber < 31 )
             boxpos = 0x27A00 - OFFSET;
@@ -163,6 +163,23 @@ void Savefile::encryptPkmn(char* pkmn) {
     }
 }
 
+void Savefile::encryptBattleSection(char* pkmn) {
+    const int ENCRYPTIONKEYPOS = 0x0;
+    const int ENCRYPTIONKEYLENGHT = 4;
+    
+    u32 encryptionkey;
+    memcpy(&encryptionkey, &pkmn[ENCRYPTIONKEYPOS], ENCRYPTIONKEYLENGHT);
+    u32 seed = encryptionkey;
+    
+    u16 temp;
+    for(int i = PKMNLENGTH; i < PARTYPKMNLENGTH; i = i+2) {
+        memcpy(&temp, &pkmn[i], 2);
+        temp ^= (seedStep(seed) >> 16);
+        seed = seedStep(seed);
+        memcpy(&pkmn[i], &temp, 2);
+    }
+}
+
 void Savefile::getPkmn(const int boxnumber, const int indexnumber, char* pkmn) {
     memcpy(pkmn, &save[getPkmnAddress(boxnumber, indexnumber)], PKMNLENGTH);
     decryptPkmn(pkmn);
@@ -175,7 +192,15 @@ bool Savefile::getPkmn(std::string path, char* destination) {
 void Savefile::setPkmn(const int boxnumber, const int indexnumber, char* pkmn) {
     calculatePKMNChecksum(pkmn);
     encryptPkmn(pkmn);
-    memcpy(&save[getPkmnAddress(boxnumber, indexnumber)], pkmn, PKMNLENGTH);
+    
+    int length = PKMNLENGTH;
+    
+    if( boxnumber >= BOXMAX ) {
+        encryptBattleSection(pkmn);
+        length = PARTYPKMNLENGTH;
+    }
+        
+    memcpy(&save[getPkmnAddress(boxnumber, indexnumber)], pkmn, length);
 }
 
 bool Savefile::setPkmn(std::string path, char* source) {

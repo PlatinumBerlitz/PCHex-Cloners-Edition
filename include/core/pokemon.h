@@ -43,7 +43,25 @@ class Pokemon {
         static const int EVLENGTH = 1;
         static const int OTNAMEPOS = 0xB0;
         static const int OTNAMELENGTH = 0x17;
-  
+        static const int BATTLEPOS = 0xE8;
+        static const int BATTLELENGTH = 1;
+        static const int BATTLELEVELPOS = 0xEC;
+        static const int BATTLELEVELLENGTH = 1;
+        static const int BATTLEHPCURRENTPOS = 0xF0;
+        static const int BATTLEHPCURRENTLENGTH = 2;
+        static const int BATTLEHPMAXPOS = 0xF2;
+        static const int BATTLEHPMAXLENGTH = 2;
+        static const int BATTLEATKPOS = 0xF4;
+        static const int BATTLEATKLENGTH = 2;
+        static const int BATTLEDEFPOS = 0xF6;
+        static const int BATTLEDEFLENGTH = 2;
+        static const int BATTLESPEEDPOS = 0xF8;
+        static const int BATTLESPEEDLENGTH = 2;
+        static const int BATTLESATKPOS = 0xFA;
+        static const int BATTLESATKLENGTH = 2;
+        static const int BATTLESDEFPOS = 0xFC;
+        static const int BATTLESDEFLENGTH = 2;
+        
         char data[260];
         Savefile* save;
         int boxnumber;
@@ -52,6 +70,7 @@ class Pokemon {
         void setPkmn();
         u32 expTableLookup(const int level, const int exptype);
         void rerollPID();
+        void fillBattleSection();
         
     public:
         static const int BOXMAX = Savefile::BOXMAX;

@@ -20,6 +20,7 @@ class Savefile {
         int getPkmnAddress(const int boxnumber, const int indexnumber);
         void calculatePKMNChecksum(char* data);
         void encryptPkmn(char* pkmn);
+        void encryptBattleSection(char* pkmn);
         
     public:
         static const int PKMNLENGTH = 232;

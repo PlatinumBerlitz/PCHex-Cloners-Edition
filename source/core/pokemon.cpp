@@ -333,6 +333,9 @@ bool Pokemon::isNicknamed() {
 }
 
 void Pokemon::setPkmn() {
+    if( boxnumber >= 31 )
+        fillBattleSection();
+    
     save->setPkmn(boxnumber, indexnumber, data);
 }
 
@@ -375,6 +378,33 @@ void Pokemon::rerollPID() {
     
     memcpy(&data[PIDPOS], &pidbuffer, PIDLENGTH);
     //setPkmn();
+}
+
+void Pokemon::fillBattleSection() {
+    u8 battle = 0;
+    memcpy(&data[BATTLEPOS], &battle, BATTLELENGTH);
+    
+    u8 level = getLevel();
+    memcpy(&data[BATTLELEVELPOS], &level, BATTLELEVELLENGTH);
+    
+    u16 currenthp = getStat(Pokemon::HP);
+    memcpy(&data[BATTLEHPCURRENTPOS], &currenthp, BATTLEHPCURRENTLENGTH);
+    memcpy(&data[BATTLEHPMAXPOS], &currenthp, BATTLEHPMAXLENGTH);
+    
+    u16 atk = getStat(Pokemon::ATK);
+    memcpy(&data[BATTLEATKPOS], &atk, BATTLEATKLENGTH);
+    
+    u16 def = getStat(Pokemon::DEF);
+    memcpy(&data[BATTLEDEFPOS], &def, BATTLEDEFLENGTH);
+    
+    u16 spe = getStat(Pokemon::SPE);
+    memcpy(&data[BATTLESPEEDPOS], &spe, BATTLESPEEDLENGTH);
+    
+    u16 satk = getStat(Pokemon::SPA);
+    memcpy(&data[BATTLESATKPOS], &satk, BATTLESATKLENGTH);
+    
+    u16 sdef = getStat(Pokemon::SPD);
+    memcpy(&data[BATTLESDEFPOS], &sdef, BATTLESDEFLENGTH);
 }
 
 u32 Pokemon::expTableLookup(const int level, const int exptype) {
