@@ -34,7 +34,7 @@ int FileSystem::initialize(const int game, const int mediatype) {
     else if( mediatype == FileSystem::CART ) {
         u64 cartid;
         amInit();
-        AM_GetTitleIdList(MEDIATYPE_GAME_CARD, 1, &cartid);
+        AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, 1, &cartid);
         
         if( cartid == FileSystem::X_ID ) gameid = 0x00055D00;
         if( cartid == FileSystem::Y_ID ) gameid = 0x00055E00;
