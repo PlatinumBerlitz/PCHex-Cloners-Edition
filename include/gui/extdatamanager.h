@@ -88,6 +88,7 @@ class ExtDataManager {
         static const int LOADINGSTRING = 48;
         static const int TEAMSTRING = 49;
         static const int HIDDENPOWERSTRING = 50;
+        static const int SELECTHIDDENPOWERSTRING = 51;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);

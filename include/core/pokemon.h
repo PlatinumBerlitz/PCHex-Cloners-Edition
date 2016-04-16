@@ -128,6 +128,7 @@ class Pokemon {
         void setLevel(const int lv);
         void setPokedexNumber(const u16 val);
         void setGender(const u8 val);
+        void setHPType(const int val);
         void setDataPtr(char* data);
         bool clone(const int boxdestination, const int indexdestination, const bool commit);
         bool importPK6(std::string path);

@@ -234,6 +234,9 @@ void inputHandler() {
         else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::ABILITYEOV )
             editAbility();
         
+         else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::HIDDENPOWEREOV )
+            editHiddenPower();
+        
         else if( State::getMode() == State::EDITABLEOVERLAYMODE && State::getEovMode() == State::ITEMEOV )
             editItem();
         
@@ -316,6 +319,8 @@ void inputHandler() {
     if( State::getTouchId() >= State::HPEVBUTTONUP && State::getTouchId() <= State::SPDEVBUTTONUP && (State::getButtonDelay() > BUTTONDELAY || State::getKeepButtonDelay() > KEEPBUTTONDELAY) && pika.getEV(State::getTouchId()-State::HPEVBUTTONUP) < 255 && !pika.isEVMAX() )
         pika.setEV(pika.getEV(State::getTouchId()-State::HPEVBUTTONUP)+1, State::getTouchId()-State::HPEVBUTTONUP);
     
+    if( State::getTouchId() == State::HIDDENPOWERBUTTON )
+        selectHiddenPower();
     
     //Keyboard management
         if( (State::getKeyboardState() == 2) || (InputManager::isPressed(InputManager::BUTTON_L) && State::getMode() == State::EDITABLEOVERLAYMODE && State::keyboard.HBKB_CheckKeyboardInput().size() > 0) || (InputManager::isPressed(InputManager::BUTTON_R) && State::getMode() == State::EDITABLEOVERLAYMODE && State::keyboard.HBKB_CheckKeyboardInput().size() > 0) ) 
@@ -633,6 +638,28 @@ void drawBottomScreen() {
             //OT
             //Field* otfield = new Field(TextureManager::getTexture(LIGHTTEXTURE), 0, POSY + FIELDDISTANCE*7, false, State::OTBUTTON, L"OT:", pika.getOT(), Field::POKEBALLMODE);
             //bottomelements.push_back(otfield);
+            
+            //Draw buttons
+            const std::string LIGHTPATH = ExtDataManager::getBasePath() + "/textures/lightbottombutton.png";
+            const std::string DARKPATH = ExtDataManager::getBasePath() + "/textures/darkbottombutton.png";
+            const int XPOS = 0;
+            const int YEXPORTPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*3);
+            const int YSAVEPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*2);
+            const int YCANCELPOS = Graphic::BOTTOMSCREENHEIGHT - TextureManager::getTexture(DARKPATH)->height;
+            LargeButton* cancelbutton;
+            LargeButton* savebutton;
+            LargeButton* exportbutton;
+
+            if( State::getMode() == State::EDITMODE ) {
+                cancelbutton = new LargeButton(TextureManager::getTexture(DARKPATH), XPOS, YCANCELPOS, InputManager::BUTTON_B, ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING));
+                bottomelements.push_back(cancelbutton);
+
+                savebutton = new LargeButton(TextureManager::getTexture(LIGHTPATH), XPOS, YSAVEPOS, InputManager::BUTTON_A, ExtDataManager::getGuiText(ExtDataManager::SAVESTRING));
+                bottomelements.push_back(savebutton);
+
+                exportbutton = new LargeButton(TextureManager::getTexture(DARKPATH), XPOS, YEXPORTPOS, InputManager::BUTTON_Y, ExtDataManager::getGuiText(ExtDataManager::EXPORTSTRING));
+                bottomelements.push_back(exportbutton);
+            }
         }
         
         if( State::getTab() == State::COMBATTAB && pika.getPokedexNumber() > 0 ) {
@@ -753,31 +780,8 @@ void drawBottomScreen() {
             bottomelements.push_back(spefield);
             
             //Hidden Power
-            //const std::string LIGHTFIELDTEXTURE = ExtDataManager::getBasePath() + "/textures/lightfield.png";
-            Field* hiddenpowerfield = new Field(TextureManager::getTexture(STATSLIGHTPATH), XSTATSAREAPOS, YSTATSAREAPOS + STATSAREADISTANCE*8, active, State::HIDDENPOWERBUTTON, ExtDataManager::getGuiText(ExtDataManager::HIDDENPOWERSTRING), ExtDataManager::getTypeName(pika.getHPType()), Field::POKEBALLMODE);
+            Field* hiddenpowerfield = new Field(TextureManager::getTexture(STATSLIGHTPATH), XSTATSAREAPOS, YSTATSAREAPOS + STATSAREADISTANCE*9, active, State::HIDDENPOWERBUTTON, ExtDataManager::getGuiText(ExtDataManager::HIDDENPOWERSTRING), ExtDataManager::getTypeName(pika.getHPType()+1), Field::POKEBALLMODE);
             bottomelements.push_back(hiddenpowerfield);
-        }
-        
-        //Draw buttons
-        const std::string LIGHTPATH = ExtDataManager::getBasePath() + "/textures/lightbottombutton.png";
-        const std::string DARKPATH = ExtDataManager::getBasePath() + "/textures/darkbottombutton.png";
-        const int XPOS = 0;
-        const int YEXPORTPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*3);
-        const int YSAVEPOS = Graphic::BOTTOMSCREENHEIGHT - (TextureManager::getTexture(DARKPATH)->height*2);
-        const int YCANCELPOS = Graphic::BOTTOMSCREENHEIGHT - TextureManager::getTexture(DARKPATH)->height;
-        LargeButton* cancelbutton;
-        LargeButton* savebutton;
-        LargeButton* exportbutton;
-        
-        if( State::getMode() == State::EDITMODE ) {
-            cancelbutton = new LargeButton(TextureManager::getTexture(DARKPATH), XPOS, YCANCELPOS, InputManager::BUTTON_B, ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING));
-            bottomelements.push_back(cancelbutton);
-            
-            savebutton = new LargeButton(TextureManager::getTexture(LIGHTPATH), XPOS, YSAVEPOS, InputManager::BUTTON_A, ExtDataManager::getGuiText(ExtDataManager::SAVESTRING));
-            bottomelements.push_back(savebutton);
-            
-            exportbutton = new LargeButton(TextureManager::getTexture(DARKPATH), XPOS, YEXPORTPOS, InputManager::BUTTON_Y, ExtDataManager::getGuiText(ExtDataManager::EXPORTSTRING));
-            bottomelements.push_back(exportbutton);
         }
         
         //Draw change tab
@@ -1125,4 +1129,22 @@ void enableMultiple() {
         State::setBoxNumber(0);
     
     State::setMode(State::MULTIPLESELECTMODE);
+}
+
+void selectHiddenPower() {
+    Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::SELECTHIDDENPOWERSTRING));
+    State::setEovMode(State::HIDDENPOWEREOV);
+    std::vector<std::string> hiddenpowertemp = ExtDataManager::getTypesNameVector();
+    hiddenpowertemp.erase(hiddenpowertemp.begin());
+    hiddenpowertemp.pop_back();
+    State::setEovVector(hiddenpowertemp);
+    State::setBackupMode(State::EDITMODE);
+    State::setMode(State::EDITABLEOVERLAYMODE);
+}
+
+void editHiddenPower() {
+    Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    pika.setHPType(State::getEovSelected());
+    closeEov();
 }

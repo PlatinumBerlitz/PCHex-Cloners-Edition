@@ -58,6 +58,7 @@ class State {
         static const int EGGMOVE2EOV = 17;
         static const int EGGMOVE3EOV = 18;
         static const int EGGMOVE4EOV = 19;
+        static const int HIDDENPOWEREOV = 20;
         
         static const int SPECIESBUTTON = 1;
         static const int NATUREBUTTON = 2;

@@ -329,6 +329,40 @@ void Pokemon::setGender(const u8 val) {
     memcpy(&data[GENDERPOS], &buffergender, GENDERLENGTH);
     setPkmn();
 }
+
+void Pokemon::setHPType(const int val) {
+    u8 ivstat[6];
+    for(int i = 0; i < 6; i++)
+        ivstat[i] = getIV(i);
+    
+    u8 hpivs[16][6] = {
+        { 1, 1, 0, 0, 0, 0 }, //Fighting
+        { 0, 0, 0, 1, 0, 0 }, //Flying
+        { 1, 1, 0, 1, 0, 0 }, // Poison
+        { 1, 1, 1, 1, 0, 0 }, // Ground
+        { 1, 1, 0, 0, 1, 0 }, // Rock
+        { 1, 0, 0, 1, 1, 0 }, // Bug
+        { 1, 0, 1, 1, 1, 0 }, // Ghost
+        { 1, 1, 1, 1, 1, 0 }, // Steel
+        { 1, 0, 1, 0, 0, 1 }, // Fire
+        { 1, 0, 0, 1, 0, 1 }, // Water
+        { 1, 0, 1, 1, 0, 1 }, // Grass
+        { 1, 1, 1, 1, 0, 1 }, // Electric
+        { 1, 0, 1, 0, 1, 1 }, // Psychic
+        { 1, 0, 0, 1, 1, 1 }, // Ice
+        { 1, 0, 1, 1, 1, 1 }, // Dragon
+        { 1, 1, 1, 1, 1, 1 }, // Dark
+    };
+    
+    for(int i = 0; i < 6; i++)
+         ivstat[i] = (ivstat[i] & 0x1E) + hpivs[val][i];
+    
+    for(int i = 0; i < 6; i++) {
+        setIV(ivstat[i], i);
+        this->save->getPkmn(this->boxnumber, this->indexnumber, data);
+    }
+}
+
 bool Pokemon::isNicknamed() {
     u32 buffer;
     

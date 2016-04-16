@@ -40,6 +40,8 @@ void selectMove(const int val);
 void editMove();
 void editEggMove();
 void enableMultiple();
+void selectHiddenPower();
+void editHiddenPower();
 
 #endif /* GUI_H */
 
