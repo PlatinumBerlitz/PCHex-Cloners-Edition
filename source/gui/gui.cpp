@@ -1014,7 +1014,7 @@ void search() {
     do {
         found = false;
         for(i = temp; i < bufferelement.size() && !found; i++) 
-            if(tosearch == bufferelement[i].substr(0, tosearch.size())) 
+            if( uiLevenshteinDistance(tosearch, bufferelement[i].substr(0, tosearch.size())) <= 2 )
                found = true;
         
         skipcount++;
@@ -1208,4 +1208,46 @@ void multipleExport() {
     State::setOverlayMsg(msg);
     State::setBackupMode(State::EDITMODE);
     State::setMode(State::OVERLAYMODE);
+}
+
+//THIS FUNCTIONS IS COURTESY OF https://rosettacode.org/wiki/Levenshtein_distance#C.2B.2B
+size_t uiLevenshteinDistance(const std::string &s1, const std::string &s2) {
+  const size_t m(s1.size());
+  const size_t n(s2.size());
+ 
+  if( m==0 ) return n;
+  if( n==0 ) return m;
+ 
+  size_t *costs = new size_t[n + 1];
+ 
+  for( size_t k=0; k<=n; k++ ) costs[k] = k;
+ 
+  size_t i = 0;
+  for ( std::string::const_iterator it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
+  {
+    costs[0] = i+1;
+    size_t corner = i;
+ 
+    size_t j = 0;
+    for ( std::string::const_iterator it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
+    {
+      size_t upper = costs[j+1];
+      if( *it1 == *it2 )
+      {
+		  costs[j+1] = corner;
+	  }
+      else
+	  {
+		size_t t(upper<corner?upper:corner);
+        costs[j+1] = (costs[j]<t?costs[j]:t)+1;
+	  }
+ 
+      corner = upper;
+    }
+  }
+ 
+  size_t result = costs[n];
+  delete [] costs;
+ 
+  return result;
 }
