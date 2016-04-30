@@ -167,9 +167,11 @@ int ExtDataManager::initialize(Savefile* save) {
     if( FileSystem::loadTextFile(path+"/types", types) != 0 )
         return 0x320;
     
+#ifdef __3dsx
     InputManager::scanInput();
     if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
         State::setShoulderless(true);
+#endif
     
     return 0;
 }

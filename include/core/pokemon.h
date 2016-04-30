@@ -71,6 +71,7 @@ class Pokemon {
         u32 expTableLookup(const int level, const int exptype);
         void rerollPID();
         void fillBattleSection();
+        //u8 setGenderless(const u8 val);
         
     public:
         static const int BOXMAX = Savefile::BOXMAX;
@@ -94,7 +95,7 @@ class Pokemon {
         u8 getNature();
         u8 getLevel();
         bool isEgg();
-        bool isFemale();
+        u8 isFemale();
         bool isShiny();
         bool isEVMAX();
         bool isGenderless();

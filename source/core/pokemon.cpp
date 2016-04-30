@@ -66,7 +66,7 @@ bool Pokemon::isEgg() {
     else return false;
 }
 
-bool Pokemon::isFemale() {
+u8 Pokemon::isFemale() {
     u8 buffergender;
     memcpy(&buffergender, &data[GENDERPOS], GENDERLENGTH);
     buffergender = (buffergender >> 1) & 0x3;
@@ -329,6 +329,14 @@ void Pokemon::setGender(const u8 val) {
     memcpy(&data[GENDERPOS], &buffergender, GENDERLENGTH);
     setPkmn();
 }
+
+/*u8 Pokemon::setGenderless(const u8 val) {
+    u8 buffergender;
+    memcpy(&buffergender, &data[GENDERPOS], GENDERLENGTH);
+    
+    buffergender &= 0xF9;
+    buffergender ^= (val & 0x2) << 1;
+}*/
 
 void Pokemon::setHPType(const int val) {
     u8 ivstat[6];

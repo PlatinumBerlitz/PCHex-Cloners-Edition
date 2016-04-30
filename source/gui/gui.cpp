@@ -35,6 +35,10 @@ void ciaConsole(int& game, int& mediatype) {
     while(!exit) {
         std::vector<Drawable*> elements;
         InputManager::scanInput();
+        
+        if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
+            State::setShoulderless(true);
+        
         if( InputManager::isPressed(InputManager::BUTTON_A) )
             exit = true;
         
@@ -593,20 +597,23 @@ void drawBottomScreen() {
 
             //Draw gender sign
             Drawable* gendersign;
-            if( !pika.isGenderless() ) {
-                const int XGENDERPOS = XSPECIESINFOSTART + 150;
-                const int YGENDERPOS = YSPECIESINFOSTART + 4;
-                const std::string MALEPATH = ExtDataManager::getBasePath() + "/textures/male.png";
-                const std::string FEMALEPATH = ExtDataManager::getBasePath() + "/textures/female.png";
+            const int XGENDERPOS = XSPECIESINFOSTART + 150;
+            const int YGENDERPOS = YSPECIESINFOSTART + 4;
+            const std::string MALEPATH = ExtDataManager::getBasePath() + "/textures/male.png";
+            const std::string FEMALEPATH = ExtDataManager::getBasePath() + "/textures/female.png";
+            const std::string GENDERLESSPATH = ExtDataManager::getBasePath() + "/textures/genderless.png";
 
-                std::string genderpath;
+            std::string genderpath;
+            if( !pika.isGenderless() ) {
                 if( pika.isFemale() ) genderpath = FEMALEPATH;
                 else genderpath = MALEPATH;
-
-                gendersign = new Drawable(TextureManager::getTexture(genderpath), XGENDERPOS, YGENDERPOS, active, State::GENDERBUTTON);
-                bottomelements.push_back(gendersign);
             }
+                
+            else genderpath = GENDERLESSPATH;
 
+            gendersign = new Drawable(TextureManager::getTexture(genderpath), XGENDERPOS, YGENDERPOS, active, State::GENDERBUTTON);
+            bottomelements.push_back(gendersign);
+            
             //Draw fields
             const std::string LIGHTTEXTURE = ExtDataManager::getBasePath() + "/textures/lightfield.png";
             const std::string DARKTEXTURE = ExtDataManager::getBasePath() + "/textures/darkfield.png";
@@ -1110,7 +1117,7 @@ void setShiny() {
 
 void setGender() {
     Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
-    pika.setGender(!pika.isFemale());
+    pika.setGender( (pika.isFemale()+1)%3 );
 }
 
 void selectSpecies() {

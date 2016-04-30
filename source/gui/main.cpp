@@ -52,7 +52,7 @@ int main() {
         initializationError(err);
     
     //MAIN LOOP
-    while(State::getMode() != State::EXITMODE) {
+    while( aptMainLoop() && (State::getMode() != State::EXITMODE) ) {
         inputHandler();
         
         drawTopScreen();
