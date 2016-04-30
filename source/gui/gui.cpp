@@ -1078,7 +1078,18 @@ void selectAbility() {
 
 void editAbility() {
     Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
-    pika.setAbility(State::getEovSelected());
+    
+    int abilitybuffer;
+    if( State::getEovSelected() == 0 )
+        abilitybuffer = 1;
+    
+    if( State::getEovSelected() == 1 )
+        abilitybuffer = 2;
+    
+    if( State::getEovSelected() == 2 )
+        abilitybuffer = 4;
+    
+    pika.setAbility(abilitybuffer);
     closeEov();
 }
 

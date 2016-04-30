@@ -75,9 +75,20 @@ u8 Pokemon::isFemale() {
 
 u8 Pokemon::getAbility() {
     u8 abilitybuffer;
-    memcpy(&abilitybuffer, &data[ABILITYPOS], ABILITYLENGTH);
+    memcpy(&abilitybuffer, &data[ABILITYNUMPOS], ABILITYNUMLENGTH);
     
-    return abilitybuffer;
+    std::vector<u8> resultset = ExtDataManager::getAbilitySet(getPokedexNumber());
+    
+    if( abilitybuffer == 1 )
+        abilitybuffer = 0;
+    
+    if( abilitybuffer == 2 )
+        abilitybuffer = 1;
+    
+    if( abilitybuffer == 4 )
+        abilitybuffer = 2;
+    
+    return resultset[abilitybuffer];
 }
 
 std::vector<std::string> Pokemon::getAbilitySet() {
@@ -248,10 +259,21 @@ void Pokemon::setNature(const u8 nature) {
 }
 
 void Pokemon::setAbility(const u8 ability) {
-    setAbilityNum(ability+1);
+    setAbilityNum(ability);
     
     std::vector<u8> resultset = ExtDataManager::getAbilitySet(getPokedexNumber());
-    u8 toset = resultset[ability];
+    
+    u8 abilitytemp;
+    if( ability == 1 )
+        abilitytemp = 0;
+    
+    if( ability == 2 )
+        abilitytemp = 1;
+    
+    if( ability == 4 )
+        abilitytemp = 2;
+    
+    u8 toset = resultset[abilitytemp];
     
     memcpy(&data[ABILITYPOS], &toset, ABILITYLENGTH);
     setPkmn();
