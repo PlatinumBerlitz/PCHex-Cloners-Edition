@@ -42,6 +42,7 @@ void editEggMove();
 void enableMultiple();
 void selectHiddenPower();
 void editHiddenPower();
+void multipleExport();
 
 #endif /* GUI_H */
 

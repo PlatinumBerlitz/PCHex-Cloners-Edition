@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstring>
 
 #include "gui.h"
 #include "extdatamanager.h"
@@ -263,6 +264,9 @@ void inputHandler() {
         
         else if( State::getMode() == State::EDITMODE )
             exprt();
+        
+        else if( State::getMode() == State::MULTIPLESELECTMODE )
+            multipleExport();
     }
     
     //SELECT KEY
@@ -458,7 +462,8 @@ void drawTopScreen() {
         const int YLEFTBUTTONSTART = Graphic::TOPSCREENHEIGHT - TextureManager::getTexture(LEFTBUTTONPATH)->height;
 
         std::string leftmsg;
-        if( State::getMode() == State::SELECTMODE || State::getMode() == State::MULTIPLESELECTMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::IMPORTSTRING);
+        if( State::getMode() == State::SELECTMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::IMPORTSTRING);
+        else if( State::getMode() == State::MULTIPLESELECTMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::EXPORTSTRING);
         else if ( State::getMode() == State::CLONEMODE || State::getMode() == State::MULTIPLECLONEMODE || State::getMode() == State::EDITABLEOVERLAYMODE ) leftmsg = ExtDataManager::getGuiText(ExtDataManager::CANCELSTRING);
 
         int lefticon;
@@ -881,7 +886,9 @@ void multipleClone() {
 }
 
 void selectImport() {
-    std::vector<std::string> result = FileSystem::obtainFileList("/pk/PCHex++/import", "pk6");
+    std::vector<std::string> result = FileSystem::obtainFileList("/pk/PCHex++/import", "pk6", true);
+    std::vector <std::string> buffer1 = FileSystem::obtainFileList("/pk/PCHex++/import", "box", false);
+    result.insert(result.begin(), buffer1.begin(), buffer1.end());
     
     if( result.empty() ) {
         State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::NOCONTENTSTRING));
@@ -907,7 +914,9 @@ void import() {
         State::setCurrentFolder(State::getCurrentFolder()+State::getEovVector()[State::getEovSelected()]+"/");
         State::getEovVector().clear();
             
-        std::vector<std::string> result = FileSystem::obtainFileList(importpath, "pk6");
+        std::vector<std::string> result = FileSystem::obtainFileList(importpath, "pk6", true);
+        std::vector<std::string> buffer1 = FileSystem::obtainFileList(importpath, "box", false);
+        result.insert(result.end(), buffer1.begin(), buffer1.end());
         
         if( result.empty() ) {
             State::setOverlayMsg(ExtDataManager::getGuiText(ExtDataManager::NOCONTENTSTRING));
@@ -931,18 +940,53 @@ void import() {
     }
     
     else {
-        Pokemon toimport(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+        if( FileSystem::getFileExtension(importpath) == "pk6" ) {
+            Pokemon toimport(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
 
-        std::string overlaymsg;
-        if( toimport.importPK6(importpath) != 0 ) overlaymsg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
-        else overlaymsg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
-        State::setOverlayMsg(overlaymsg);
-        State::setMode(State::OVERLAYMODE);
-        State::setEovSelected(0);
-        State::setCurrentFolder("");
-        State::setSkip(0);
-        State::getEovVector().clear();
-        State::keyboard.HBKB_Clean();
+            std::string overlaymsg;
+            if( toimport.importPK6(importpath) != 0 ) overlaymsg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+            else overlaymsg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+            State::setOverlayMsg(overlaymsg);
+            State::setMode(State::OVERLAYMODE);
+            State::setEovSelected(0);
+            State::setCurrentFolder("");
+            State::setSkip(0);
+            State::getEovVector().clear();
+            State::keyboard.HBKB_Clean();
+        }
+        
+        else if ( FileSystem::getFileExtension(importpath) == "box" ) {
+            char buffer[232*30];
+            if( FileSystem::readFile(importpath, buffer) == 0 ) {
+                //success
+                for(int i = 0; i < 30; i++) {
+                    char pkmbuffer[232];
+                    memcpy(&pkmbuffer, &buffer[i*232], 232);
+                    Pokemon pika(State::getBoxNumber(), i, ExtDataManager::getSave());
+                    pika.setDataPtr(pkmbuffer);
+                }
+                ExtDataManager::getSave()->writeSaveFile();
+                std::string overlaymsg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+                State::setOverlayMsg(overlaymsg);
+                State::setMode(State::OVERLAYMODE);
+                State::setEovSelected(0);
+                State::setCurrentFolder("");
+                State::setSkip(0);
+                State::getEovVector().clear();
+                State::keyboard.HBKB_Clean();
+            }
+            else {
+                //fail
+                std::string overlaymsg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+                State::setOverlayMsg(overlaymsg);
+                State::setMode(State::OVERLAYMODE);
+                State::setEovSelected(0);
+                State::setCurrentFolder("");
+                State::setSkip(0);
+                State::getEovVector().clear();
+                State::keyboard.HBKB_Clean();
+            }
+        }
     }
 }
 
@@ -1008,7 +1052,7 @@ void commitSave() {
 void exprt() {
     std::string msg;
     Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
-    if( pika.exportPK6("/pk/PCHex++/export/"+ExtDataManager::getSpeciesName(pika.getPokedexNumber())+"_"+intTOstring(pika.getPID(), 10)) != 0 ) msg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+    if( pika.exportPK6("/pk/PCHex++/export/"+ExtDataManager::getSpeciesName(pika.getPokedexNumber())+"_"+intTOstring(pika.getPID(), 10)+".pk6") != 0 ) msg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
     else msg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
     
     State::setOverlayMsg(msg);
@@ -1147,4 +1191,21 @@ void editHiddenPower() {
     Pokemon pika(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
     pika.setHPType(State::getEovSelected());
     closeEov();
+}
+
+void multipleExport() {
+    char buffer[232*30];
+    
+    for(int i = 0; i < 30; i++) {
+        Pokemon pika(State::getBoxNumber(), i, ExtDataManager::getSave());
+        memcpy(buffer+(i*232), pika.getDataPtr(), 232);
+    }
+    
+    std::string msg;
+    if( FileSystem::writeFile("/pk/PCHex++/export/box"+intTOstring(State::getBoxNumber()+1, 10)+".box", buffer, 232*30) != 0 ) msg = ExtDataManager::getGuiText(ExtDataManager::FAILEDSTRING);
+    else msg = ExtDataManager::getGuiText(ExtDataManager::SUCCESSSSTRING);
+    
+    State::setOverlayMsg(msg);
+    State::setBackupMode(State::EDITMODE);
+    State::setMode(State::OVERLAYMODE);
 }

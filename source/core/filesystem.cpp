@@ -245,7 +245,7 @@ bool FileSystem::isDirectory(const std::string path) {
     
 }
 
-std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::string extension) {
+std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::string extension, const bool includedirectories) {
     std::vector<std::string> result;
     DIR* dir = opendir(directory.c_str());
     if(dir == NULL) 
@@ -261,13 +261,21 @@ std::vector<std::string> FileSystem::obtainFileList(std::string directory, std::
             /*if(dotPos == std::string::npos && !isdirectory) 
                 toadd = false;*/
     
-            if( extension == toinsert.substr(dotPos+1) || dotPos == std::string::npos )
+            if( extension == toinsert.substr(dotPos+1) || (dotPos == std::string::npos && includedirectories) )
                 result.push_back(toinsert);
         }
     }while(ent != NULL);
     
     closedir(dir);
     return result;
+}
+
+std::string FileSystem::getFileExtension(const std::string path) {
+    std::string::size_type dotPos = path.rfind(".");
+    if( dotPos != std::string::npos )
+        return path.substr(dotPos+1);
+    
+    else return "";
 }
 
 int FileSystem::romFsInit() {
