@@ -1029,7 +1029,7 @@ void search() {
     do {
         found = false;
         for(i = temp; i < bufferelement.size() && !found; i++) 
-            if( uiLevenshteinDistance(tosearch, bufferelement[i].substr(0, tosearch.size())) <= 2 )
+            if( uiLevenshteinDistance(tosearch, bufferelement[i].substr(0, tosearch.size())) <= 1 )
                found = true;
         
         skipcount++;
