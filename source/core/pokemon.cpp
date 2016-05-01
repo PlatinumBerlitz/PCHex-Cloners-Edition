@@ -3,7 +3,6 @@
 #include <3ds.h>
 
 #include "pokemon.h"
-#include "extdatamanager.h"
 
 Pokemon::Pokemon(const int boxnumber, const int indexnumber, Savefile* save) {
     this->save = save;
@@ -196,7 +195,7 @@ bool Pokemon::isShiny() {
 bool Pokemon::isGenderless() {
     u8 buffergender;
     memcpy(&buffergender, &data[GENDERPOS], GENDERLENGTH);
-    buffergender = (buffergender >> 2) & 0x3;
+    buffergender = (buffergender >> 2) & 0x1;
     return buffergender;
     
 }
@@ -215,7 +214,7 @@ u8 Pokemon::getHPType() {
 u16 Pokemon::getStat(const int stat) {
     u16 tempspecies = getPokedexNumber();
     if( getForm() )
-        tempspecies = 721 + ExtDataManager::getFormData(tempspecies) + getForm() - 1;
+        tempspecies = ExtDataManager::getFormData(tempspecies) + getForm() - 1;
     
     u8 mult = 10;
     u16 final;
@@ -352,13 +351,16 @@ void Pokemon::setGender(const u8 val) {
     setPkmn();
 }
 
-/*u8 Pokemon::setGenderless(const u8 val) {
-    u8 buffergender;
-    memcpy(&buffergender, &data[GENDERPOS], GENDERLENGTH);
+void Pokemon::setForm(const u8 val) {
+    u8 bufferform;
+    memcpy(&bufferform, &data[GENDERPOS], GENDERLENGTH);
     
-    buffergender &= 0xF9;
-    buffergender ^= (val & 0x2) << 1;
-}*/
+    bufferform &= 0x7;
+    bufferform ^= val << 3;
+    
+    memcpy(&data[GENDERPOS], &bufferform, GENDERLENGTH);
+    setPkmn();
+}
 
 void Pokemon::setHPType(const int val) {
     u8 ivstat[6];

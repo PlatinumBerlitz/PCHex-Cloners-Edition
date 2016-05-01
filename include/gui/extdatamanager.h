@@ -25,7 +25,9 @@ class ExtDataManager {
         static std::vector<u8> spedata;
         static std::vector<u8> spadata;
         static std::vector<u8> spddata;
-        static std::vector<u8> formdata;
+        static std::vector<u16> formdata;
+        static std::vector<u8> numberformdata;
+        static std::vector<u16> spriteformdata;
         static std::vector<abilityset> abilitydata;
         static Savefile* saveptr;
         
@@ -89,6 +91,7 @@ class ExtDataManager {
         static const int TEAMSTRING = 49;
         static const int HIDDENPOWERSTRING = 50;
         static const int SELECTHIDDENPOWERSTRING = 51;
+        static const int FORMSTRING = 52;
         
         static std::string getBasePath();
         static int initialize(Savefile* save);
@@ -100,7 +103,9 @@ class ExtDataManager {
         static u8 getBaseSPE(const int val) { return spedata[val]; }
         static u8 getBaseSPA(const int val) { return spadata[val]; }
         static u8 getBaseSPD(const int val) { return spddata[val]; }
-        static u8 getFormData(const int val) { return formdata[val]; }
+        static u16 getFormData(const int val) { return formdata[val]; }
+        static u8 getNumberFormData(const int val) { return numberformdata[val]; }
+        static u16 getSpriteFormData(const int val) { return spriteformdata[val]; }
         static std::string getSpeciesName(const int val) { return species[val]; }
         static std::vector<std::string> getSpeciesNameVector() { return species; }
         static std::string getNatureName(const int val) { return natures[val]; }

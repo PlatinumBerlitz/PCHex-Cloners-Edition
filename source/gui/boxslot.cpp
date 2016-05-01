@@ -33,21 +33,39 @@ void BoxSlot::draw() {
         const int SPRITEHEIGHT = 30;
         const std::string SPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites.png";
         const std::string SHINYSPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites_shiny.png";
-        if( pika.isShiny() ) spritepath = SHINYSPRITEPATH;
-        else spritepath = SPRITEPATH;
-                
+        const std::string FORMSPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites_form.png";
+        const std::string SHINYFORMSPRITEPATH = ExtDataManager::getBasePath() + "/textures/pkmsprites_form_shiny.png";
         int spritesheetx;
         int spritesheety;
-        if( !pika.isEgg() ) {
-            spritesheetx = ((pika.getPokedexNumber()) % 25) * SPRITEWIDTH;
-            spritesheety = ((pika.getPokedexNumber()) / 25) * SPRITEHEIGHT;
+        
+        if( pika.getForm() == 0 || pika.getPokedexNumber() == 664 || pika.getPokedexNumber() == 665 ) {
+            if( pika.isShiny() ) spritepath = SHINYSPRITEPATH;
+            else spritepath = SPRITEPATH;
+
+            if( !pika.isEgg() ) {
+                spritesheetx = ((pika.getPokedexNumber()) % 25) * SPRITEWIDTH;
+                spritesheety = ((pika.getPokedexNumber()) / 25) * SPRITEHEIGHT;
+            }
+
+            else {
+                spritesheetx = (722 % 25) * SPRITEWIDTH;
+                spritesheety = (722 / 25) * SPRITEHEIGHT;
+            }
         }
 
         else {
-            spritesheetx = (722 % 25) * SPRITEWIDTH;
-            spritesheety = (722 / 25) * SPRITEHEIGHT;
+            if( pika.isShiny() ) spritepath = SHINYFORMSPRITEPATH;
+            else spritepath = FORMSPRITEPATH;
+            
+            int tempindex = ExtDataManager::getSpriteFormData(pika.getPokedexNumber()) + (pika.getForm() - 1);
+            //Workaround because of the wrong spritesheet(?)
+            if( pika.getPokedexNumber() >= 621 )
+                tempindex = tempindex+2;
+            
+            spritesheetx = (tempindex % 12) * SPRITEWIDTH;
+            spritesheety = (tempindex / 12) * SPRITEHEIGHT;
         }
-
+        
         Drawable* pokemontex = new Drawable(TextureManager::getTexture(spritepath), posx, posy, spritesheetx, spritesheety, SPRITEWIDTH, SPRITEHEIGHT);
         elements.push_back(pokemontex);
 

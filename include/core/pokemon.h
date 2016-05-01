@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "savefile.h"
+#include "extdatamanager.h"
+
 
 class Pokemon {
     private:
@@ -112,6 +114,7 @@ class Pokemon {
         u8 getIV(const int stat);
         u8 getEV(const int stat);
         u8 getForm();
+        u8 getFormNumber() { return ExtDataManager::getNumberFormData(getPokedexNumber()); }
         u8 getHPType();
         u16 getStat(const int stat);
         char* getDataPtr() { return data; }
@@ -129,6 +132,7 @@ class Pokemon {
         void setLevel(const int lv);
         void setPokedexNumber(const u16 val);
         void setGender(const u8 val);
+        void setForm(const u8 val);
         void setHPType(const int val);
         void setDataPtr(char* data);
         bool clone(const int boxdestination, const int indexdestination, const bool commit);

@@ -69,7 +69,6 @@ class State {
         static const int GENDERBUTTON = 7;
         static const int LVBUTTONDOWN = 8;
         static const int LVBUTTONUP = 9;
-        static const int OTBUTTON = 10;
         static const int TABBUTTON = 11;
         static const int MOVE1BUTTON = 12;
         static const int MOVE2BUTTON = 13;
@@ -106,6 +105,8 @@ class State {
         static const int LSHOULDERLESSBUTTON = 42;
         static const int RSHOULDERLESSBUTTON = 43;
         static const int HIDDENPOWERBUTTON = 44;
+        static const int FORMBUTTONDOWN = 45;
+        static const int FORMBUTTONUP = 46;
         
         static const int GENERALTAB = 0;
         static const int COMBATTAB = 1;

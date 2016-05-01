@@ -309,6 +309,12 @@ void inputHandler() {
     if( State::getTouchId() == State::LVBUTTONUP && (State::getButtonDelay() > BUTTONDELAY || State::getKeepButtonDelay() > KEEPBUTTONDELAY) && pika.getLevel() < 100 )
         pika.setLevel(pika.getLevel()+1);
     
+    if( State::getTouchId() == State::FORMBUTTONDOWN && (State::getButtonDelay() > BUTTONDELAY || State::getKeepButtonDelay() > KEEPBUTTONDELAY) && pika.getForm() > 0 )
+        pika.setForm(pika.getForm()-1);
+    
+    if( State::getTouchId() == State::FORMBUTTONUP && (State::getButtonDelay() > BUTTONDELAY || State::getKeepButtonDelay() > KEEPBUTTONDELAY) && pika.getForm() < pika.getFormNumber() )
+        pika.setForm(pika.getForm()+1);
+    
     if( State::getTouchId() == State::TABBUTTON && State::getButtonDelay() > BUTTONDELAY && State::getTKDelay() == 0 )
         State::setTab(!State::getTab());
     
@@ -647,9 +653,11 @@ void drawBottomScreen() {
              Field* shinyfield = new Field(TextureManager::getTexture(DARKTEXTURE), 0, POSY + FIELDDISTANCE*6, active, State::SHINYBUTTON, ExtDataManager::getGuiText(ExtDataManager::SHINYSTRING), shinystring, Field::POKEBALLMODE);
             bottomelements.push_back(shinyfield);
 
-            //OT
-            //Field* otfield = new Field(TextureManager::getTexture(LIGHTTEXTURE), 0, POSY + FIELDDISTANCE*7, false, State::OTBUTTON, L"OT:", pika.getOT(), Field::POKEBALLMODE);
-            //bottomelements.push_back(otfield);
+            //Form
+            if( pika.getFormNumber() > 0 ) {
+                Field* formfield = new Field(TextureManager::getTexture(LIGHTTEXTURE), 0, POSY + FIELDDISTANCE*7, active, State::FORMBUTTONDOWN, ExtDataManager::getGuiText(ExtDataManager::FORMSTRING), intTOstring(pika.getForm(), 10), Field::ARROWMODE);
+                bottomelements.push_back(formfield);
+            }
             
             //Draw buttons
             const std::string LIGHTPATH = ExtDataManager::getBasePath() + "/textures/lightbottombutton.png";
@@ -1148,6 +1156,9 @@ void editSpecies() {
     
     Pokemon pika3(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
     pika3.setAbility(0);
+    
+    Pokemon pika4(State::getBoxNumber(), State::getIndexNumber(), ExtDataManager::getSave());
+    pika4.setForm(0);
     
     closeEov();
 }
