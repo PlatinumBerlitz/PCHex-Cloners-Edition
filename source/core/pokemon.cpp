@@ -214,7 +214,7 @@ u8 Pokemon::getHPType() {
 u16 Pokemon::getStat(const int stat) {
     u16 tempspecies = getPokedexNumber();
     if( getForm() )
-        tempspecies = ExtDataManager::getFormData(tempspecies) + getForm() - 1;
+        tempspecies = ExtDataManager::getFormData(getPokedexNumber()) + getForm() - 1;
     
     u8 mult = 10;
     u16 final;

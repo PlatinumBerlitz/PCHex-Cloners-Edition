@@ -143,15 +143,14 @@ int ExtDataManager::initialize(Savefile* save) {
         numberformdata.push_back(toinsert);
     }
     
-    //retrieve form data UNSURE
+    //retrieve form data
     for(int i = 0; i < count; i++) {
-        u8 toinsert;
+        u16 toinsert;
         memcpy(&toinsert, &buffer[(i*size)+0x1C], 2);
         formdata.push_back(toinsert);
     }
     
     //retrieve sprite form data
-    
     //Tricky and really unefficient workaround for the spritesheet bug
     char* buffer2 = new char[0x11170];
     if( FileSystem::getGame() == FileSystem::XY ) {
