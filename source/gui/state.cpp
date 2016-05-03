@@ -27,6 +27,7 @@ char State::tempbackup[232];
 int State::tab = 0;
 int State::tabkeyboarddelay = 0;
 bool State::shoulderless = false;
+bool State::skiplanguage = false;
 
 void State::setCiaSelected(const int val) {
     if(val < 0 )

@@ -33,6 +33,7 @@ class State {
         static int tab;
         static int tabkeyboarddelay;
         static bool shoulderless;
+        static bool skiplanguage;
         
     public:
         static const int EXITMODE = 0;
@@ -157,6 +158,8 @@ class State {
         static void setTKDelay(const int val) { tabkeyboarddelay = val; }
         static bool getShoulderless() { return shoulderless; }
         static void setShoulderless(const bool val) { shoulderless = val; }
+        static bool getSkipLanguage() { return skiplanguage; }
+        static void setSkiplanguage(const bool val) { skiplanguage = val; }
 };
 
 #endif /* STATE_H */

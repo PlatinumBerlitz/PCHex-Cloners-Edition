@@ -43,30 +43,43 @@ int ExtDataManager::initialize(Savefile* save) {
     FileSystem::createDirectory("/pk/PCHex++/export");
     FileSystem::createDirectory("/pk/PCHex++/backup");
     
-    cfguInit();
-    u8 language;
+    #ifdef __3dsx
+    InputManager::scanInput();
+    if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
+        State::setShoulderless(true);
     
-    if( CFGU_GetSystemLanguage(&language) )
-        return 0x311;
+    if( InputManager::isPressed(InputManager::BUTTON_L) )
+        State::setSkiplanguage(true);
+    #endif
     
     std::string langpath;
-    if( language == ENGLISH )
-        langpath = "/en";
-    
-    else if( language == FRENCH )
-        langpath = "/fr";
-    
-    else if( language == DEUTSCH )
-        langpath = "/de";
-        
-    else if( language == ITALIAN )
-        langpath = "/it";
-    
-    else if( language == SPANISH )
-        langpath = "/es";
-   
-    else if( language == NEDERLAND )
-        langpath = "/nl";
+    if( !State::getSkipLanguage() ) {
+        cfguInit();
+        u8 language;
+
+        if( CFGU_GetSystemLanguage(&language) )
+            return 0x311;
+
+        if( language == ENGLISH )
+            langpath = "/en";
+
+        else if( language == FRENCH )
+            langpath = "/fr";
+
+        else if( language == DEUTSCH )
+            langpath = "/de";
+
+        else if( language == ITALIAN )
+            langpath = "/it";
+
+        else if( language == SPANISH )
+            langpath = "/es";
+
+        else if( language == NEDERLAND )
+            langpath = "/nl";
+
+        else langpath = "/en";
+    }
     
     else langpath = "/en";
     
@@ -199,12 +212,6 @@ int ExtDataManager::initialize(Savefile* save) {
     
     if( FileSystem::loadTextFile(path+"/types", types) != 0 )
         return 0x320;
-    
-#ifdef __3dsx
-    InputManager::scanInput();
-    if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
-        State::setShoulderless(true);
-#endif
     
     delete [] buffer;
     delete [] buffer2;

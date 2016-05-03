@@ -39,6 +39,9 @@ void ciaConsole(int& game, int& mediatype) {
         if( InputManager::isPressed(InputManager::BUTTON_SELECT) )
             State::setShoulderless(true);
         
+        if( InputManager::isPressed(InputManager::BUTTON_L) )
+            State::setSkiplanguage(true);
+        
         if( InputManager::isPressed(InputManager::BUTTON_A) )
             exit = true;
         
